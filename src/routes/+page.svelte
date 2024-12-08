@@ -1,2 +1,35 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation'; // API nawigacji
+
+    let isLoggedIn: boolean | null = null; // Stan logowania (null = sprawdzanie)
+
+    onMount(async () => {
+        try {
+            // Sprawdzenie, czy użytkownik jest zalogowany
+            const response = await fetch('/api/auth', { method: 'GET' });
+
+            if (response.ok) {
+                const data = await response.json();
+                isLoggedIn = data.success;
+                if (isLoggedIn) {
+                    // Przekierowanie zalogowanego użytkownika do strony X
+                    goto('/main/user_panel');
+                }
+            } else {
+                isLoggedIn = false; // Traktuj jako niezalogowanego
+            }
+        } catch (error) {
+            console.error('Error checking login status:', error);
+            isLoggedIn = false; // Traktuj jako niezalogowanego w przypadku błędu
+        }
+    });
+</script>
+
+<!-- Wyświetlanie treści w zależności od stanu logowania -->
+{#if isLoggedIn === false}
+    <h1>Welcome to Warehouse Management</h1>
+    <p>Please <a href="/api/auth">log in</a> to access the system.</p>
+{:else if isLoggedIn === null}
+    <p>Checking authentication status...</p>
+{/if}
