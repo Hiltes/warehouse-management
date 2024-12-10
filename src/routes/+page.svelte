@@ -13,7 +13,7 @@
                 const data = await response.json();
                 isLoggedIn = data.success;
                 if (isLoggedIn) {
-                    // Przekierowanie zalogowanego użytkownika do strony X
+                
                     goto('/main/user_panel');
                 }
             } else {
@@ -28,8 +28,10 @@
 
 <!-- Wyświetlanie treści w zależności od stanu logowania -->
 {#if isLoggedIn === false}
+    <div>
     <h1>Welcome to Warehouse Management</h1>
     <p>Please <a href="/api/auth">log in</a> to access the system.</p>
+    </div>
 {:else if isLoggedIn === null}
     <p>Checking authentication status...</p>
 {/if}

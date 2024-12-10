@@ -36,8 +36,10 @@
 </script>
 
 {#if isLoggedIn === true}
+    <div>
     <h1>Welcome to User Panel</h1>
     <button on:click={logout}>Logout</button>
+    </div>
 {:else if isLoggedIn === null}
     <p>Checking authentication status...</p>
 {:else}

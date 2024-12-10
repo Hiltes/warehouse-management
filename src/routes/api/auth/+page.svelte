@@ -64,9 +64,11 @@
 </script>
 
 {#if isLoggedIn}
+    <div>
     <h2>Welcome, {userEmail}!</h2>
     <p>{message}</p>
-    <p>You are already logged in. Redirecting to your dashboard...</p>
+    <p>You are already logged in. Click <a href="/main/user_panel">redirect</a>.</p>
+    </div>
 {:else}
     <form on:submit={handleLogin}>
         <label>
