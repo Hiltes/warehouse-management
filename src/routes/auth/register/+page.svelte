@@ -24,6 +24,7 @@
             const data = await response.json();
             if (data.success) {
                 message = 'Utworzono konto, możesz się zalogować!';
+                isLoggedIn = true;
             } else {
                 message = 'Nie udało się utworzyć konta, konto z tymi danymi już istnieje!';
             }
@@ -54,17 +55,12 @@
         }
     }
 
-    onMount(() => {
-        checkLoginStatus();
-    });
-
 </script>
 
 {#if isLoggedIn}
     <div>
-    <h2>Welcome, {username}!</h2>
-    <p>{message}</p>
-    <p>You are already logged in. Click <a href="/main/user_panel">redirect</a>.</p>
+    <h2>Hi, {username}!</h2>
+    <p>You are already registered in. Click <a href="/main/user_panel">redirect</a>.</p>
     </div>
 {:else}
     <form on:submit={handReg}>
@@ -80,7 +76,8 @@
             Password:
             <input type="password" bind:value={password} required />
         </label>
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
     </form>
     <p>{message}</p>
+    
 {/if}
