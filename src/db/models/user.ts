@@ -14,7 +14,7 @@ const userSchema = new Schema<IUser>({
     password: { type: String, required: true }
 });
 
-// Model użytkownika
-const User = mongoose.model<IUser>('User', userSchema);
+// Model użytkownika - (Dodane: mongoose.models.User - Sprawdza, czy model User został już utworzony. Jeśli tak, korzysta z istniejącego modelu, zamiast tworzyć nowy.)
+const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 
 export default User;
