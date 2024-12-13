@@ -16,7 +16,7 @@
 
    onMount(async () => {
        try {
-           const res = await fetch('/api/items', {
+           const res = await fetch('/main/magazyn', {
                headers: { 'Content-Type': 'application/json' },
                credentials: 'include',
            });
@@ -38,7 +38,7 @@
 
    async function fetchItems() {
         try {
-            const res = await fetch('/api/items', {
+            const res = await fetch('/main/magazyn', {
                 headers: {
                     'Content-Type': 'application/json',
                 },

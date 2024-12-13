@@ -1,37 +1,34 @@
 <script lang="ts">
-    import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
+
+
+    let username = '';
     let email = '';
     let password = '';
     let message = '';
     let isLoggedIn = false;
-    let userEmail = '';
 
     // Funkcja logowania
-    async function handleLogin(event: Event) {
+    async function handReg(event: Event) {
         event.preventDefault();
 
         try {
-            const response = await fetch('/api/auth', {
+            const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({username, email, password }),
                 credentials: 'same-origin'
             });
 
             const data = await response.json();
             if (data.success) {
-                message = 'Login successful!';
-                await checkLoginStatus();
-
-                // Przekierowanie do user panelu po zalogowaniu
-                goto('/main/user_panel');
+                message = 'Utworzono konto, możesz się zalogować!';
             } else {
-                message = 'Invalid credentials.';
+                message = 'Nie udało się utworzyć konta, konto z tymi danymi już istnieje!';
             }
         } catch (error) {
-            console.error('Error during login:', error);
+            console.error('Error during register:', error);
             message = 'An error occurred. Please try again later.';
         }
     }
@@ -39,7 +36,7 @@
     // Funkcja sprawdzająca stan zalogowania
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/api/auth', {
+            const response = await fetch('/auth/login', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -47,7 +44,7 @@
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
-                userEmail = data.user?.email || '';
+                username = data.user?.username || '';
             } else {
                 isLoggedIn = false;
             }
@@ -57,20 +54,24 @@
         }
     }
 
-    // Sprawdzenie stanu logowania przy załadowaniu strony
     onMount(() => {
         checkLoginStatus();
     });
+
 </script>
 
 {#if isLoggedIn}
     <div>
-    <h2>Welcome, {userEmail}!</h2>
+    <h2>Welcome, {username}!</h2>
     <p>{message}</p>
     <p>You are already logged in. Click <a href="/main/user_panel">redirect</a>.</p>
     </div>
 {:else}
-    <form on:submit={handleLogin}>
+    <form on:submit={handReg}>
+        <label>
+            Username:
+            <input type="username" bind:value={username} required />
+        </label>
         <label>
             Email:
             <input type="email" bind:value={email} required />

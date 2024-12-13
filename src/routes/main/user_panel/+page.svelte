@@ -10,7 +10,7 @@
             const data = await response.json();
 
             if (data.success) {
-                goto('/api/auth');
+                goto('/auth/login');
             }
         } catch (error) {
             console.error('Error during logout:', error);
@@ -19,7 +19,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch('/api/auth', { method: 'GET', credentials: 'same-origin' });
+            const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
 
             if (response.ok) {
                 const data = await response.json();
@@ -27,7 +27,7 @@
                 
             } else {
                 isLoggedIn = false;
-                goto('/api/auth'); 
+                goto('/auth/login'); 
             }
         } catch (error) {
             console.error('Error checking login status:', error);
