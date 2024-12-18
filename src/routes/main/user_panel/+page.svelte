@@ -10,7 +10,7 @@
             const data = await response.json();
 
             if (data.success) {
-                goto('/api/auth');
+                goto('/auth/login');
             }
         } catch (error) {
             console.error('Error during logout:', error);
@@ -19,26 +19,34 @@
 
     onMount(async () => {
         try {
-            const response = await fetch('/api/auth', { method: 'GET', credentials: 'same-origin' });
+            const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
 
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
+                
             } else {
                 isLoggedIn = false;
-                goto('/api/auth'); 
+                goto('/auth/login'); 
             }
         } catch (error) {
             console.error('Error checking login status:', error);
             isLoggedIn = false;
         }
     });
+
+    function goToAddItem() {
+        goto('/main/addItem');
+    }
+
 </script>
 
 {#if isLoggedIn === true}
     <div>
-    <h1>Welcome to User Panel</h1>
-    <button on:click={logout}>Logout</button>
+        <h1>Welcome to User Panel</h1>
+        <button on:click={() => goto('/main/warehouse')}>Przejdź do Magazynu</button>
+        <button on:click={goToAddItem}>Dodaj Produkt do Magazynu</button>
+        <button on:click={logout}>Logout</button>
     </div>
 {:else if isLoggedIn === null}
     <p>Checking authentication status...</p>

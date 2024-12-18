@@ -7,7 +7,7 @@
     onMount(async () => {
         try {
             // Sprawdzenie, czy użytkownik jest zalogowany
-            const response = await fetch('/api/auth', { method: 'GET' });
+            const response = await fetch('/auth/login', { method: 'GET' });
 
             if (response.ok) {
                 const data = await response.json();
@@ -30,7 +30,7 @@
 {#if isLoggedIn === false}
     <div>
     <h1>Welcome to Warehouse Management</h1>
-    <p>Please <a href="/api/auth">log in</a> to access the system.</p>
+    <p>Please <a href="/auth/login">log in</a> to access the system.</p>
     </div>
 {:else if isLoggedIn === null}
     <p>Checking authentication status...</p>
