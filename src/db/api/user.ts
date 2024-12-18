@@ -1,5 +1,5 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
-import type { IUser } from '$db/models/user';
+import bcrypt from 'bcrypt';
 
 // Dodanie nowego użytkownika
 export async function addUser(username: string, email: string, password: string): Promise<boolean> {
@@ -60,6 +60,17 @@ export async function checkUser(email: string, password: string): Promise<IUser 
             console.log("User not found");
             return null; // Brak użytkownika
         }
+
+        // Porównaj hasło przy użyciu bcrypt
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            console.log("Niepoprawne hasło");
+            return false;
+        }
+
+        console.log("Użytkownik znaleziony:", email);
+        return true;
     } catch (error) {
         console.error("Error checking user:", error);
         return null;

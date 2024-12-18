@@ -6,12 +6,10 @@ import bcrypt from 'bcrypt';
 
 export async function POST({ request }: { request: Request }) {
     try {
-        const {email, password } = await request.json();
+        const { email, password } = await request.json();
 
-        const saltRounds = 10;
-        const hashedPassword = bcrypt.hashSync(password, saltRounds);
-
-        const userExists = await checkUser(email, hashedPassword);
+        // Sprawdzenie czy użytkownik istnieje i porównanie hasła
+        const userExists = await checkUser(email, password);
 
         if (userExists) {
             const token = jwt.sign({ id: userExists._id, email: userExists.email }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
@@ -31,6 +29,7 @@ export async function POST({ request }: { request: Request }) {
         return json({ success: false, error: 'Internal server error' }, { status: 500 });
     }
 }
+
 
 export async function GET({ request }: { request: Request }) {
     const cookie = request.headers.get('cookie');
