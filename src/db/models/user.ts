@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 // Interfejs użytkownika z TypeScript
-interface IUser extends Document {
+export interface IUser extends Document {
     username: string;
     email: string;
     password: string;

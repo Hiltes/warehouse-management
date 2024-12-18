@@ -35,12 +35,17 @@
         }
     });
 
+    function goToAddItem() {
+        goto('/main/addItem');
+    }
+
 </script>
 
 {#if isLoggedIn === true}
     <div>
         <h1>Welcome to User Panel</h1>
-        <button on:click={() => goto('/main/magazyn')}>Przejdź do Magazynu</button>
+        <button on:click={() => goto('/main/warehouse')}>Przejdź do Magazynu</button>
+        <button on:click={goToAddItem}>Dodaj Produkt do Magazynu</button>
         <button on:click={logout}>Logout</button>
     </div>
 {:else if isLoggedIn === null}
