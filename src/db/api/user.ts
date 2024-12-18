@@ -1,4 +1,5 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
+import bcrypt from 'bcrypt';
 
 // Dodanie nowego użytkownika
 export async function addUser(username: string, email: string, password: string): Promise<boolean> {
@@ -51,16 +52,24 @@ export async function deleteUserById(userId: string) {
 // Sprawdzenie, czy użytkownik istnieje
 export async function checkUser(email: string, password: string): Promise<boolean> {
     try {
-        // Znalezienie użytkownika w bazie
+        // Znajdź użytkownika po adresie email
         const user = await User.findOne({ email });
-        if (user) {
-            // Opcjonalnie: porównanie hasła (np. jeśli hasła są haszowane)
-            console.log("User found:", user);
-            return true;
-        } else {
-            console.log("User not found");
+
+        if (!user) {
+            console.log("Niepoprawny e-mail");
             return false;
         }
+
+        // Porównaj hasło przy użyciu bcrypt
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            console.log("Niepoprawne hasło");
+            return false;
+        }
+
+        console.log("Użytkownik znaleziony:", email);
+        return true;
     } catch (error) {
         console.error("Error checking user:", error);
         return false;

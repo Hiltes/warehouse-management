@@ -63,6 +63,7 @@
     <p>You are already registered in. Click <a href="/main/user_panel">redirect</a>.</p>
     </div>
 {:else}
+    <div>
     <form on:submit={handReg}>
         <label>
             Username:
@@ -79,5 +80,5 @@
         <button type="submit">Register</button>
     </form>
     <p>{message}</p>
-    
+    </div>
 {/if}
