@@ -1,22 +1,15 @@
 <script lang="ts">
    import { onMount } from 'svelte';
    import { goto } from '$app/navigation';
+   import type { IItem } from '$db/models/item';
 
-   interface Item {
-      _id: string;
-      warehouse_id: string;
-      item_name: string;
-      quantity: number;
-      arrival_date: string; 
-      added_by: string;
-   }
-
-   let items: Item[] = []; 
+   
+   let items: IItem[] = []; 
    let error = '';
 
    onMount(async () => {
        try {
-           const res = await fetch('/main/magazyn', {
+           const res = await fetch('/main/warehouse', {
                headers: { 'Content-Type': 'application/json' },
                credentials: 'include',
            });
@@ -38,7 +31,7 @@
 
    async function fetchItems() {
         try {
-            const res = await fetch('/main/magazyn', {
+            const res = await fetch('/main/warehouse', {
                 headers: {
                     'Content-Type': 'application/json',
                 },

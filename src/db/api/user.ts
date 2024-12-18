@@ -1,4 +1,5 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
+import type { IUser } from '$db/models/user';
 
 // Dodanie nowego użytkownika
 export async function addUser(username: string, email: string, password: string): Promise<boolean> {
@@ -49,21 +50,19 @@ export async function deleteUserById(userId: string) {
 }
 
 // Sprawdzenie, czy użytkownik istnieje
-export async function checkUser(email: string, password: string): Promise<boolean> {
+export async function checkUser(email: string, password: string): Promise<IUser | null> {
     try {
-        // Znalezienie użytkownika w bazie
         const user = await User.findOne({ email });
         if (user) {
-            // Opcjonalnie: porównanie hasła (np. jeśli hasła są haszowane)
             console.log("User found:", user);
-            return true;
+            return user; // Zwracaj obiekt użytkownika
         } else {
             console.log("User not found");
-            return false;
+            return null; // Brak użytkownika
         }
     } catch (error) {
         console.error("Error checking user:", error);
-        return false;
+        return null;
     }
 }
 
