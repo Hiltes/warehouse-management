@@ -9,6 +9,7 @@
     let arrivalDate = '';
     let warehouseId = '';
     let warehouse: IWarehouse[] = [];
+    let isLoggedIn: boolean | null = null;
 
 
     async function addItem() {
@@ -29,8 +30,7 @@
                 alert('Error adding item');
             }
         }
-
-    onMount(() => {
+        
         async function fetchWarehouse() {
             try{
                 const res = await fetch('/main/addItem');
@@ -46,32 +46,81 @@
             }
         }
 
+    onMount(async () => {		
+        try {
+			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+
+			if (response.ok) {
+				const data = await response.json();
+				isLoggedIn = data.success;
+			} else {
+				isLoggedIn = false;
+				goto('/auth/login');
+			}
+
+		} catch (error) {
+			console.error('Error checking login status:', error);
+			isLoggedIn = false;
+		}
+
         fetchWarehouse();
     });
+
+
+    async function logout() {
+		try {
+			const response = await fetch('/main/user_panel', {
+				method: 'POST',
+				credentials: 'same-origin'
+			});
+			const data = await response.json();
+
+			if (data.success) {
+				goto('/auth/login');
+			}
+		} catch (error) {
+			console.error('Error during logout:', error);
+		}
+	}
+
 </script>
 
-<form on:submit|preventDefault={addItem}>
-   <h1>Dodaj Produkt do Magazynu</h1>
-   <label for="name">Nazwa Przedmiotu:</label>
-   <input id="name" bind:value={itemName} type="text" required />
-
-   <label for="quantity">Ilość:</label>
-   <input id="quantity" bind:value={quantity} type="number" required />
-
-   <label for="date">Data Przyjęcia:</label>
-   <input id="date" bind:value={arrivalDate} type="date" required />
-
-   <label for="warehouse">Magazyn:</label>
-   <select id="warehouse" bind:value={warehouseId} required>
-       <option value=""  selected>Wybierz magazyn</option>
-       {#each warehouse as w}
-           <option value={w._id}>{w.warehouse_type}</option>
-       {/each}
-   </select>
-
-   <button type="submit" class="btn-submit" style="margin-top: 30px;">Dodaj Przedmiot</button>
-   <button on:click={() => goto('/main/user_panel')}>Wróć do Panelu Użytkownika</button>
-
-</form>
 
 
+
+
+
+{#if isLoggedIn === true}
+	<div id="mySidenav" class="sidenav">
+		<button on:click={() => goto('/main/warehouse')}>Magazyn</button>
+		<button on:click={() => goto('/main/addItem')}>Dodaj Produkt</button>
+		<button on:click={logout}>Wyloguj</button>
+	</div>
+
+    <form on:submit|preventDefault={addItem}>
+        <h1>Dodaj Produkt do Magazynu</h1>
+        <label for="name">Nazwa Przedmiotu:</label>
+        <input id="name" bind:value={itemName} type="text" required />
+     
+        <label for="quantity">Ilość:</label>
+        <input id="quantity" bind:value={quantity} type="number" required />
+     
+        <label for="date">Data Przyjęcia:</label>
+        <input id="date" bind:value={arrivalDate} type="date" required />
+     
+        <label for="warehouse">Magazyn:</label>
+        <select id="warehouse" bind:value={warehouseId} required>
+            <option value=""  selected>Wybierz magazyn</option>
+            {#each warehouse as w}
+                <option value={w._id}>{w.warehouse_type}</option>
+            {/each}
+        </select>
+     
+        <button type="submit" class="btn-submit" style="margin-top: 30px;">Dodaj Przedmiot</button>
+     
+     </form>
+{:else if isLoggedIn === null}
+	<p>Checking authentication status...</p>
+{:else}
+	<p>You are not logged in. Redirecting...</p>
+{/if}

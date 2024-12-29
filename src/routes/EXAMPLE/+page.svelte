@@ -47,10 +47,14 @@
 		<button on:click={logout}>Wyloguj</button>
 	</div>
 
-    <div class="centered">
-	<h2>Witaj w Panelu użytkownia </h2>
-	<p>Tutaj będą wyświetlały się dane o koncie</p>
-    </div>
+    ****************************************************************
+
+    TUTAJ DODAJESZ TO CO CHCESZ
+    dzięki temu będzię autoryzowany użytkownik za każdą aktualizacją strony
+    będzie też dodany sidebar
+
+    ****************************************************************
+
 {:else if isLoggedIn === null}
 	<p>Checking authentication status...</p>
 {:else}
