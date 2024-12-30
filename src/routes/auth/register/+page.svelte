@@ -66,15 +66,15 @@
     <div>
     <form on:submit={handReg}>
         <label>
-            Username:
+            Admin Username:
             <input type="username" bind:value={username} required />
         </label>
         <label>
-            Email:
+            Admin Email:
             <input type="email" bind:value={email} required />
         </label>
         <label>
-            Password:
+            Admin Password:
             <input type="password" bind:value={password} required />
         </label>
         <button type="submit">Register</button>

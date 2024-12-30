@@ -75,15 +75,16 @@
     <div>
         <form on:submit={handleLogin}>
             <label>
-                Email:
+                Client Email:
                 <input type="email" bind:value={email} required />
             </label>
             <label>
-                Password:
+                Client Password:
                 <input type="password" bind:value={password} required />
             </label>
             <button type="submit">Login</button>
-            <a href='/auth/register'>Register</a>
+            <a href='/auth/register_client'>Register</a>
+            <a href='/auth/login'>Switch to admin panel</a>
         </form>
 
         <p>{message}</p>
