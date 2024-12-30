@@ -26,7 +26,7 @@
                 await checkLoginStatus();
 
                 // Przekierowanie do user panelu po zalogowaniu
-                goto('/main/user_panel');
+                goto('/main/admin_panel');
             } else {
                 message = 'Invalid credentials.';
             }

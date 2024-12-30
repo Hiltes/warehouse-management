@@ -60,7 +60,7 @@
 {#if isLoggedIn}
     <div>
     <h2>Hi, {username}!</h2>
-    <p>You are already registered in. Click <a href="/main/user_panel">redirect</a>.</p>
+    <p>You are already registered in. Click <a href="/main/admin_panel">redirect</a>.</p>
     </div>
 {:else}
     <div>

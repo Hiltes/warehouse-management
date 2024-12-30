@@ -9,7 +9,7 @@
 
 	async function logout() {
 		try {
-			const response = await fetch('/main/user_panel', {
+			const response = await fetch('/main/admin_panel', {
 				method: 'POST',
 				credentials: 'same-origin'
 			});

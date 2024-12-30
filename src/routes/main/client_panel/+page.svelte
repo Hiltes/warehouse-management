@@ -44,6 +44,9 @@
 	<div id="mySidenav" class="sidenav">
 		<button on:click={() => goto('/main/warehouse')}>Magazyn</button>
 		<button on:click={() => goto('/main/addItem')}>Dodaj Produkt</button>
+		<button on:click={() => goto('/main/about')}>O kliencie</button>
+		<button on:click={() => goto('/main/opinions')}>Opinie</button>
+		<button on:click={() => goto('/main/orders')}>Zamówienia</button>
 		<button on:click={logout}>Wyloguj</button>
 	</div>
 
