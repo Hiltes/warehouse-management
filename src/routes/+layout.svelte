@@ -1,6 +1,5 @@
-<script lang="ts">
-	import '../app.css';
-	let { children } = $props();
+<script>
+	import '../app.css'; // Import ogólnych stylów
 </script>
 
-{@render children()}
+<slot /> <!-- Miejsce na renderowanie stron -->
