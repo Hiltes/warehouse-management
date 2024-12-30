@@ -9,7 +9,7 @@ export async function POST({ request }) {
         const { email, password } = await request.json();
 
         // Sprawdzenie czy użytkownik istnieje
-        const userExists = await checkUser(email); // Funkcja powinna tylko sprawdzić, czy użytkownik istnieje w bazie danych
+        const userExists = await checkUser(email,password); // Funkcja powinna tylko sprawdzić, czy użytkownik istnieje w bazie danych
 
         // Jeśli użytkownik istnieje, porównaj hasło
         if (userExists && await bcrypt.compare(password, userExists.passwordHash)) {
