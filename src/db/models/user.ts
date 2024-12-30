@@ -11,9 +11,13 @@ export interface IUser extends Document {
 // Schemat użytkownika
 const userSchema = new Schema<IUser>({
     username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
-});
+    password: { type: String, required: true },
+    email: { type: String, required: true, unique: true }
+},
+{
+    versionKey: false
+}
+);
 
 // Model użytkownika - (Dodane: mongoose.models.User - Sprawdza, czy model User został już utworzony. Jeśli tak, korzysta z istniejącego modelu, zamiast tworzyć nowy.)
 const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
