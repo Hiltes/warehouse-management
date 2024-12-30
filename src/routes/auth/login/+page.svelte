@@ -75,17 +75,17 @@
     <div>
         <form on:submit={handleLogin}>
             <label>
-                Email:
+                <p>Email</p>
                 <input type="email" bind:value={email} required />
             </label>
             <label>
-                Password:
+                <p>Password</p>
                 <input type="password" bind:value={password} required />
             </label>
             <button type="submit">Login</button>
-            <a href='/auth/register'>Register</a>
-        </form>
-
+            
+            <p>Don't have an account? <a href="/auth/register">Sign up!</a></p>
         <p>{message}</p>
+        </form>
     </div>
 {/if}
