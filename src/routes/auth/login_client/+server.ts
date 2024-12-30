@@ -4,7 +4,7 @@ import { SECRET_JWT_KEY, TOKEN_EXPIRY_TIME } from '$env/static/private';
 import { checkUser } from '$db/api/user'; // Upewnij się, że ta funkcja sprawdza hasło z bcrypt
 import bcrypt from 'bcrypt';
 
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
     try {
         const { email, password } = await request.json();
 
@@ -31,7 +31,7 @@ export async function POST({ request }) {
     }
 }
 
-export async function GET({ request }) {
+export async function GET({ request }: { request: Request }) {
     const cookie = request.headers.get('cookie');
     const token = cookie?.match(/token=([^;]+)/)?.[1];
 

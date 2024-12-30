@@ -26,7 +26,7 @@
                 await checkLoginStatus();
 
                 // Przekierowanie do user panelu po zalogowaniu
-                goto('/main/user_panel');
+                goto('/main/client_panel');
             } else {
                 message = 'Invalid credentials.';
             }
@@ -69,7 +69,7 @@
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
-        <p>You are already logged in. Click <a href="/main/user_panel">redirect</a>.</p>
+        <p>You are already logged in. Click <a href="/main/client_panel">redirect</a>.</p>
     </div>
 {:else}
     <div>

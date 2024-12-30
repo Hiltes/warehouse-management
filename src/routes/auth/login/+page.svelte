@@ -69,7 +69,7 @@
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
-        <p>You are already logged in. Click <a href="/main/user_panel">redirect</a>.</p>
+        <p>You are already logged in. Click <a href="/main/admin_panel">redirect</a>.</p>
     </div>
 {:else}
     <div>

@@ -10,6 +10,7 @@ export async function POST({ request }: { request: Request }) {
 
         // Sprawdzenie czy użytkownik istnieje i porównanie hasła
         const userExists = await checkUser(email, password);
+    
 
         if (userExists) {
             const token = jwt.sign({ id: userExists._id, email: userExists.email }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
@@ -21,7 +22,8 @@ export async function POST({ request }: { request: Request }) {
                 JSON.stringify({ success: true, message: 'Login successful' }),
                 { status: 200, headers }
             );
-        } else {
+        } 
+        else {
             return json({ success: false, error: 'Invalid credentials' }, { status: 401 });
         }
     } catch (error) {

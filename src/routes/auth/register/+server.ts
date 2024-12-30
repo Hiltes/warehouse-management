@@ -10,10 +10,12 @@ export async function POST({ request }: { request: Request }) {
     try {
         const { username, email, password } = await request.json();
 
+
         const saltRounds = 10;
         const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
         const Useradd = await addUser(username, email, hashedPassword);
+        
 
         if (Useradd) {
             const token = jwt.sign({ email }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
@@ -33,3 +35,4 @@ export async function POST({ request }: { request: Request }) {
         return json({ success: false, error: 'Internal server error' }, { status: 500 });
     }
 }
+
