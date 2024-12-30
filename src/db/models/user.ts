@@ -1,9 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import type { IUser } from '$db/models/user';
+
 
 // Interfejs użytkownika z TypeScript
 export interface IUser extends Document {
-    [x: string]: string;
     username: string;
     email: string;
     password: string;

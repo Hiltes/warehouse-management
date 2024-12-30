@@ -12,7 +12,7 @@ export async function POST({ request }) {
         const userExists = await checkUser(email,password); // Funkcja powinna tylko sprawdzić, czy użytkownik istnieje w bazie danych
 
         // Jeśli użytkownik istnieje, porównaj hasło
-        if (userExists && await bcrypt.compare(password, userExists.passwordHash)) {
+        if (userExists) {
             const token = jwt.sign({ id: userExists._id, email: userExists.email }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
 
             const headers = new Headers();
