@@ -42,11 +42,10 @@
 
 {#if isLoggedIn === true}
 	<div id="mySidenav" class="sidenav">
-		<button on:click={() => goto('/main/warehouse')}>Magazyn</button>
-		<button on:click={() => goto('/main/addItem')}>Dodaj Produkt</button>
-		<button on:click={() => goto('/main/about')}>O kliencie</button>
-		<button on:click={() => goto('/main/opinions')}>Opinie</button>
-		<button on:click={() => goto('/main/orders')}>Zamówienia</button>
+		<button on:click={() => goto('/main/warehouse_client')}>Magazyn</button>
+		<button on:click={() => goto('/main/about_client')}>O kliencie</button>
+		<button on:click={() => goto('/main/opinions_client')}>Opinie</button>
+		<button on:click={() => goto('/main/orders_client')}>Zamówienia</button>
 		<button on:click={logout}>Wyloguj</button>
 	</div>
 
