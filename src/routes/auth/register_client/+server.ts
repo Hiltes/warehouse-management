@@ -8,8 +8,12 @@ import { TOKEN_EXPIRY_TIME } from '$env/static/private';
 export async function POST({ request }: { request: Request }) {
     try {
         // Ekstrahujemy dane z żądania
-        const { username, email, password } = await request.json();
+        const { username, email, password,role } = await request.json();
 
+        const validRoles = ['user', 'admin'];
+        if (!validRoles.includes(role)) {
+            return json({ success: false, error: 'Invalid role' }, { status: 400 });
+        }
         // Weryfikacja poprawności danych może być dodana w przyszłości
 
         // Haszowanie hasła
@@ -17,11 +21,11 @@ export async function POST({ request }: { request: Request }) {
         const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
         // Dodanie użytkownika do bazy danych
-        const userAdded = await addUser(username, email, hashedPassword);
+        const userAdded = await addUser(username, email, hashedPassword,role);
 
         if (userAdded) {
             // Generowanie tokenu JWT
-            const token = jwt.sign({ email }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
+            const token = jwt.sign({ email,role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
 
             // Ustawienie ciasteczka z tokenem
             const headers = new Headers();

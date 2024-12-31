@@ -2,7 +2,7 @@ import User from '$db/models/user'; // Zakładamy, że model User jest w pliku m
 import type { IUser } from '$db/models/user';
 
 // Dodanie nowego użytkownika
-export async function addUser(username: string, email: string, password: string): Promise<boolean> {
+export async function addUser(username: string, email: string, password: string, role: string): Promise<boolean> {
     try {
         // Sprawdzenie, czy użytkownik już istnieje
         const doesUserExist = await checkUserV2(email);

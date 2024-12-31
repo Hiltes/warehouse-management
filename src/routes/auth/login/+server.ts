@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import jwt from 'jsonwebtoken';
+import jwt, {type JwtPayload} from 'jsonwebtoken';
 import { SECRET_JWT_KEY, TOKEN_EXPIRY_TIME } from '$env/static/private';
 import { checkUser } from '$db/api/user';
 import bcrypt from 'bcrypt';
@@ -42,7 +42,7 @@ export async function GET({ request }: { request: Request }) {
     }
 
     try {
-        const decoded = jwt.verify(token, SECRET_JWT_KEY);
+        const decoded = jwt.verify(token, SECRET_JWT_KEY) as JwtPayload;
         if (decoded.role !== 'admin') {
             return json({ success: false, error: 'Unauthorized access' }, { status: 403 });
         }
