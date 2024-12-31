@@ -67,6 +67,7 @@ export async function checkUser(email: string, password: string): Promise<IUser 
 }
 
 
+
 export async function checkUserV2(email: string): Promise<boolean> {
     try {
         // Znalezienie użytkownika w bazie
