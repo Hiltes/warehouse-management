@@ -1,5 +1,6 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
 import type { IUser } from '$db/models/user';
+import bcrypt from 'bcrypt';
 
 // Dodanie nowego użytkownika
 export async function addUser(username: string, email: string, password: string, role: string): Promise<boolean> {
@@ -13,12 +14,16 @@ export async function addUser(username: string, email: string, password: string,
         }
 
         // Tworzenie nowego użytkownika
+        
+        const hashedPassword = await bcrypt.hash(password, 10); // Haszowanie hasła
         const newUser = new User({
             username,
             email,
-            password
+            password: hashedPassword,
+            role
         });
 
+        
         // Zapisanie nowego użytkownika w bazie
         await newUser.save();
         console.log("User added successfully");
@@ -27,6 +32,8 @@ export async function addUser(username: string, email: string, password: string,
         console.error("Error adding user:", error);
         return false;
     }
+
+    
 }
 
 // Znalezienie wszystkich użytkowników
@@ -85,3 +92,4 @@ export async function checkUserV2(email: string): Promise<boolean> {
         return false;
     }
 }
+

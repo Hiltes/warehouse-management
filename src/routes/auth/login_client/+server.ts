@@ -41,7 +41,7 @@ export async function GET({ request }: { request: Request }) {
 
     try {
         const decoded = jwt.verify(token, SECRET_JWT_KEY) as JwtPayload;
-        if (decoded.role !== 'admin') {
+        if (decoded.role !== 'client') {
             return json({ success: false, error: 'Unauthorized access' }, { status: 403 });
         }
         return json({ success: true, user: decoded }, { status: 200 });

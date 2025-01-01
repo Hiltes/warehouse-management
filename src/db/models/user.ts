@@ -14,7 +14,7 @@ const userSchema = new Schema<IUser>({
     username: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, enum: ['admin', 'client'], default: 'client' }
+    role: { type: String, enum: ['admin', 'client']}
 },
 {
     versionKey: false

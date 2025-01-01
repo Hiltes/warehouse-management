@@ -10,8 +10,9 @@ export async function POST({ request }: { request: Request }) {
         // Ekstrahujemy dane z żądania
         const { username, email, password,role } = await request.json();
 
+        const client_role = 'client';
         const validRoles = ['user', 'admin'];
-        if (!validRoles.includes(role)) {
+        if (!validRoles.includes(client_role)) {
             return json({ success: false, error: 'Invalid role' }, { status: 400 });
         }
         // Weryfikacja poprawności danych może być dodana w przyszłości

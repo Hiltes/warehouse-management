@@ -7,6 +7,7 @@
     let message = '';
     let isLoggedIn = false;
     let username = '';
+    let userRole= '';
 
     // Funkcja logowania
     async function handleLogin(event: Event) {
@@ -26,8 +27,12 @@
                 await checkLoginStatus();
 
                 // Przekierowanie do user panelu po zalogowaniu
+                if(userRole==='admin'){
                 goto('/main/admin_panel');
             } else {
+                message = 'You do not have permission to access the admin panel.';
+            }
+        } else {
                 message = 'Invalid credentials.';
             }
         } catch (error) {
@@ -48,14 +53,17 @@
                 const data = await response.json();
                 isLoggedIn = data.success;
                 username = data.user?.email || ''; // Upewnij się, że user i username istnieją
+                userRole = data.user?.role || ''; // Upewnij się, że rola użytkownika istnieje
             } else {
                 isLoggedIn = false;
                 username = ''; // Wyczyszczenie nazwy użytkownika, jeśli sesja wygasła
+                userRole = ''; // Wyczyszczenie roli użytkownika
             }
         } catch (error) {
             console.error('Error checking login status:', error);
             isLoggedIn = false;
             username = ''; // Wyczyszczenie nazwy użytkownika w przypadku błędu
+            userRole = ''; // Wyczyszczenie roli użytkownika
         }
     }
 
