@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import jwt, {type JwtPayload} from 'jsonwebtoken';
 import { SECRET_JWT_KEY, TOKEN_EXPIRY_TIME } from '$env/static/private';
 import { checkUser } from '$db/api/user';
-import bcrypt from 'bcrypt';
+
 
 export async function POST({ request }: { request: Request }) {
     try {
