@@ -10,7 +10,7 @@ export async function POST({ request }: { request: Request }) {
     try {
         const { username, email, password,role } = await request.json();
 
-
+ 
         const validRoles = ['admin','client'];
         if (!validRoles.includes(role)) {
             return json({ success: false, error: 'Invalid role' }, { status: 400 });

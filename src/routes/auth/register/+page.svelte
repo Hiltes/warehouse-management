@@ -13,11 +13,13 @@
     async function handReg(event: Event) {
         event.preventDefault();
 
+        const role = 'admin'; // rola admina
+
         try {
             const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({username, email: email.toLowerCase(), password }),
+                body: JSON.stringify({username, email: email.toLowerCase(), password,role }),
                 credentials: 'same-origin'
             });
 

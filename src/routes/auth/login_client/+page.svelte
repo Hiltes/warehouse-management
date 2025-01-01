@@ -30,7 +30,7 @@
                 if(userRole==='client'){
                 goto('/main/client_panel');
             } else {
-                message = 'You do not have permission to access the client panel.';
+                message = 'Invalid user role';
             }
         } else {
                 message = 'Invalid credentials.';
@@ -73,12 +73,17 @@
     });
 </script>
 
-{#if isLoggedIn}
+{#if isLoggedIn && userRole === 'client'}
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
         <p>You are already logged in. Click <a href="/main/client_panel">redirect</a>.</p>
     </div>
+{:else if isLoggedIn && userRole !== 'client'}
+<div>
+    <p>You are logged in as {username}, but you do not have permission to access the client panel.</p>
+    <p>{message}</p>
+</div>
 {:else}
     <div>
         <form on:submit={handleLogin}>

@@ -20,7 +20,8 @@ export async function addUser(username: string, email: string, password: string,
             username,
             email,
             password: hashedPassword,
-            role
+            role,
+            createdAt: new Date()
         });
 
         
