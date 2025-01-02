@@ -1,8 +1,9 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
 import type { IUser } from '$db/models/user';
+import bcrypt from 'bcrypt';
 
 // Dodanie nowego użytkownika
-export async function addUser(username: string, email: string, password: string): Promise<boolean> {
+export async function addUser(username: string, email: string, password: string, role: string): Promise<boolean> {
     try {
         // Sprawdzenie, czy użytkownik już istnieje
         const doesUserExist = await checkUserV2(email);
@@ -13,12 +14,16 @@ export async function addUser(username: string, email: string, password: string)
         }
 
         // Tworzenie nowego użytkownika
+        
+        const hashedPassword = await bcrypt.hash(password, 10); // Haszowanie hasła
         const newUser = new User({
             username,
             email,
-            password
+            password: hashedPassword,
+            role
         });
 
+        
         // Zapisanie nowego użytkownika w bazie
         await newUser.save();
         console.log("User added successfully");
@@ -27,6 +32,8 @@ export async function addUser(username: string, email: string, password: string)
         console.error("Error adding user:", error);
         return false;
     }
+
+    
 }
 
 // Znalezienie wszystkich użytkowników
@@ -67,6 +74,7 @@ export async function checkUser(email: string, password: string): Promise<IUser 
 }
 
 
+
 export async function checkUserV2(email: string): Promise<boolean> {
     try {
         // Znalezienie użytkownika w bazie
@@ -81,6 +89,43 @@ export async function checkUserV2(email: string): Promise<boolean> {
         }
     } catch (error) {
         console.error("Error checking user:", error);
+        return false;
+    }
+
+    
+}
+
+export async function changePassword(email: string, oldPassword: string, newPassword: string): Promise<boolean> {
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.log("User not found");
+            return false; // Użytkownik nie został znaleziony
+        }
+
+           //Pokaż dane użytkownika
+           console.log("User found:", { username: user.username, email: user.email });
+         
+
+        // Sprawdzenie starego hasła
+        const isMatch = await bcrypt.compare(oldPassword.trim(), user.password);
+        console.log("Comparing:", oldPassword, user.password, "Match:", isMatch);
+        if (!isMatch) {
+            console.log("Old password is incorrect");
+            return false; // Stare hasło jest niepoprawneA
+        }
+
+
+        // Haszowanie nowego hasła
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedNewPassword;
+
+        // Zapisz zmiany
+        await user.save();
+        console.log("Password changed successfully");
+        return true;
+    } catch (error) {
+        console.error("Error changing password:", error);
         return false;
     }
 }

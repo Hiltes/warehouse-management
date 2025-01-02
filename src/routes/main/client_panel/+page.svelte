@@ -6,14 +6,14 @@
 
 	async function logout() {
 		try {
-			const response = await fetch('/main/admin_panel', {
+			const response = await fetch('/main/client_panel', {
 				method: 'POST',
 				credentials: 'same-origin'
 			});
 			const data = await response.json();
 
 			if (data.success) {
-				goto('/auth/login');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error during logout:', error);
@@ -22,14 +22,16 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+			const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
 
 			if (response.ok) {
 				const data = await response.json();
 				isLoggedIn = data.success;
+				console.log('User is logged in:', isLoggedIn);
 			} else {
 				isLoggedIn = false;
-				goto('/auth/login');
+				console.log('User is not logged in, redirecting...');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error checking login status:', error);
@@ -42,19 +44,17 @@
 
 {#if isLoggedIn === true}
 	<div id="mySidenav" class="sidenav">
-		<button on:click={() => goto('/main/warehouse')}>Magazyn</button>
-		<button on:click={() => goto('/main/addItem')}>Dodaj Produkt</button>
+		<button on:click={() => goto('/main/warehouse_client')}>Magazyn</button>
+		<button on:click={() => goto('/main/about_client')}>O kliencie</button>
+		<button on:click={() => goto('/main/opinions_client')}>Opinie</button>
+		<button on:click={() => goto('/main/orders_client')}>Zamówienia</button>
 		<button on:click={logout}>Wyloguj</button>
 	</div>
 
-    ****************************************************************
-
-    TUTAJ DODAJESZ TO CO CHCESZ
-    dzięki temu będzię autoryzowany użytkownik za każdą aktualizacją strony
-    będzie też dodany sidebar
-
-    ****************************************************************
-
+    <div class="centered">
+	<h2>Witaj w Panelu użytkownia </h2>
+	<p>Tutaj będą wyświetlały się dane o koncie</p>
+    </div>
 {:else if isLoggedIn === null}
 	<p>Checking authentication status...</p>
 {:else}

@@ -14,7 +14,7 @@
         event.preventDefault();
 
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -27,8 +27,8 @@
                 await checkLoginStatus();
 
                 // Przekierowanie do user panelu po zalogowaniu
-                if(userRole==='admin'){
-                goto('/main/admin_panel');
+                if(userRole==='client'){
+                goto('/main/client_panel');
             } else {
                 message = 'Invalid user role';
             }
@@ -44,7 +44,7 @@
     // Funkcja sprawdzająca stan zalogowania
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -73,35 +73,34 @@
     });
 </script>
 
-{#if isLoggedIn && userRole === 'admin'}
+{#if isLoggedIn && userRole === 'client'}
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
-        <p>You are already logged in. Click <a href="/main/admin_panel">redirect</a>.</p>
+        <p>You are already logged in. Click <a href="/main/client_panel">redirect</a>.</p>
     </div>
-{:else if isLoggedIn && userRole !== 'admin'}
+{:else if isLoggedIn && userRole !== 'client'}
 <div>
-    <p>You are logged in as {username}, but you do not have permission to access the admin panel.</p>
+    <p>You are logged in as {username}, but you do not have permission to access the client panel.</p>
     <p>{message}</p>
 </div>
 {:else}
     <div>
         <form on:submit={handleLogin}>
             <label>
-                Admin Email:
+                Client Email:
                 <input type="email" bind:value={email} required />
             </label>
             <label>
-               Admin Password:
+                Client Password:
                 <input type="password" bind:value={password} required />
             </label>
             <button type="submit">Login</button>
-            <a href='/auth/register'>Register</a>
-            <a href='/auth/login_client'>Switch to client panel</a>
-            <a href='/auth/password_admin'>Change password</a>
+            <a href='/auth/register_client'>Register</a>
+            <a href='/auth/login'>Switch to admin panel</a>
+            <a href='/auth/password_client'>Change password</a>
         </form>
 
         <p>{message}</p>
-        </form>
     </div>
 {/if}
