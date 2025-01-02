@@ -98,6 +98,7 @@
             <button type="submit">Login</button>
             <a href='/auth/register_client'>Register</a>
             <a href='/auth/login'>Switch to admin panel</a>
+            <a href='/auth/password_client'>Change password</a>
         </form>
 
         <p>{message}</p>

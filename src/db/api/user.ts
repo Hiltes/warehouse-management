@@ -103,12 +103,18 @@ export async function changePassword(email: string, oldPassword: string, newPass
             return false; // Użytkownik nie został znaleziony
         }
 
+           //Pokaż dane użytkownika
+           console.log("User found:", { username: user.username, email: user.email });
+         
+
         // Sprawdzenie starego hasła
-        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        const isMatch = await bcrypt.compare(oldPassword.trim(), user.password);
+        console.log("Comparing:", oldPassword, user.password, "Match:", isMatch);
         if (!isMatch) {
             console.log("Old password is incorrect");
-            return false; // Stare hasło jest niepoprawne
+            return false; // Stare hasło jest niepoprawneA
         }
+
 
         // Haszowanie nowego hasła
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);

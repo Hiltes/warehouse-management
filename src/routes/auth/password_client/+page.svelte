@@ -7,7 +7,7 @@
     async function handleChangePassword(event: Event) {
         event.preventDefault();
         try {
-            const response = await fetch('/auth/password_admin', {
+            const response = await fetch('/auth/password_client', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, oldPassword, newPassword }),
