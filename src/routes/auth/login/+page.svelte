@@ -26,12 +26,8 @@
                 await checkLoginStatus();
 
                 // Przekierowanie do user panelu po zalogowaniu
-<<<<<<< Updated upstream
-                goto('/main/user_panel');
-=======
                 if(userRole==='admin'){
                 goto('/main/admin/admin_panel');
->>>>>>> Stashed changes
             } else {
                 message = 'Invalid credentials.';
             }
@@ -74,11 +70,7 @@
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
-<<<<<<< Updated upstream
-        <p>You are already logged in. Click <a href="/main/user_panel">redirect</a>.</p>
-=======
         <p>You are already logged in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
->>>>>>> Stashed changes
     </div>
 {:else}
     <div>
@@ -92,10 +84,6 @@
                 <input type="password" bind:value={password} required />
             </label>
             <button type="submit">Login</button>
-<<<<<<< Updated upstream
-            
-            <p>Don't have an account? <a href="/auth/register">Sign up!</a></p>
-=======
             <div class="centered">
             <a href='/auth/register'>Register</a> <br>
             <a href='/auth/login_client'>Switch to client panel</a><br>
@@ -103,7 +91,6 @@
             </div>
         </form>
 
->>>>>>> Stashed changes
         <p>{message}</p>
     </div>
 {/if}

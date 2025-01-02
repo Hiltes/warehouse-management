@@ -83,46 +83,4 @@ export async function checkUserV2(email: string): Promise<boolean> {
         console.error("Error checking user:", error);
         return false;
     }
-<<<<<<< Updated upstream
-=======
-
-    
-}
-
-
-
-export async function changePassword(email: string, oldPassword: string, newPassword: string): Promise<boolean> {
-    try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            console.log("User not found");
-            return false; // Użytkownik nie został znaleziony
-        }
-
-           //Pokaż dane użytkownika
-           console.log("User found:", { username: user.username, email: user.email });
-         
-
-        // Sprawdzenie starego hasła
-        const isMatch = await bcrypt.compare(oldPassword.trim(), user.password);
-        console.log("Comparing:", oldPassword, user.password, "Match:", isMatch);
-        if (!isMatch) {
-            console.log("Old password is incorrect");
-            return false; // Stare hasło jest niepoprawneA
-        }
-
-
-        // Haszowanie nowego hasła
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedNewPassword;
-
-        // Zapisz zmiany
-        await user.save();
-        console.log("Password changed successfully");
-        return true;
-    } catch (error) {
-        console.error("Error changing password:", error);
-        return false;
-    }
->>>>>>> Stashed changes
 }

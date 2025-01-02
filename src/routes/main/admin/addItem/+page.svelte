@@ -69,11 +69,7 @@
 
     async function logout() {
 		try {
-<<<<<<< Updated upstream:src/routes/main/addItem/+page.svelte
-			const response = await fetch('/main/user_panel', {
-=======
 			const response = await fetch('/main/admin/admin_panel', {
->>>>>>> Stashed changes:src/routes/main/admin/addItem/+page.svelte
 				method: 'POST',
 				credentials: 'same-origin'
 			});
