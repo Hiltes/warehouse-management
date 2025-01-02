@@ -24,6 +24,8 @@ export async function POST({ request }: { request: Request }) {
             );
         } 
         else {
+            const headers = new Headers();
+            headers.append('Set-Cookie', `token=0; HttpOnly; Path=/; Max-Age=0`);
             return json({ success: false, error: 'Invalid credentials' }, { status: 401 });
         }
     } catch (error) {
