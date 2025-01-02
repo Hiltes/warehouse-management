@@ -1,57 +1,59 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import type { IItem } from '$db/models/item';
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
+    import type { IItem } from '$db/models/item';
 
-	let isLoggedIn: boolean | null = null; 
+
+    let isLoggedIn: boolean | null = null; 
 	let items: IItem[] = [];
 	let error = '';
 
-	async function logout() {
+    async function logout() {
 		try {
-			const response = await fetch('/main/admin/admin_panel', {
+			const response = await fetch('/main/client_panel', {
 				method: 'POST',
 				credentials: 'same-origin'
 			});
 			const data = await response.json();
 
 			if (data.success) {
-				goto('/auth/login');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error during logout:', error);
 		}
 	}
+        
 
-	onMount(async () => {
-		try {
-			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+    onMount(async () => {		
+        try {
+			const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
 
 			if (response.ok) {
 				const data = await response.json();
 				isLoggedIn = data.success;
 			} else {
 				isLoggedIn = false;
-				goto('/auth/login');
+				goto('/auth/login_client');
 			}
+
 		} catch (error) {
 			console.error('Error checking login status:', error);
 			isLoggedIn = false;
 		}
 
-		fetchItems();
-	});
+        fetchItems();
+    });
 
-	async function fetchItems() {
+    async function fetchItems() {
 		try {
-			const res = await fetch('/main/admin/warehouse', {
+			const res = await fetch('/main/warehouse', {
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				credentials: 'include'
 			});
-
-			if (res.ok) {
+            if (res.ok) {
 				items = await res.json();
 			} else if (res.status === 401) {
 				error = 'Unauthorized. Redirecting to login page.';
@@ -64,19 +66,21 @@
 			error = 'Error fetching items.';
 		}
 	}
-</script>
+    </script>
+    
 
-{#if error}
-	<p class="error">{error}</p>
-{:else if items.length > 0 && isLoggedIn === true}
-<div id="mySidenav" class="sidenav">
-    <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
-    <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
-    <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
-    <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
-    <button on:click={logout}>Wyloguj</button>
-</div>
-	<div class="warehouse">
+
+
+{#if isLoggedIn === true}
+	<div id="mySidenav" class="sidenav">
+		<button on:click={() => goto('/main/warehouse_client')}>Magazyn</button>
+		<button on:click={() => goto('/main/about_client')}>O kliencie</button>
+		<button on:click={() => goto('/main/opinions_client')}>Opinie</button>
+		<button on:click={() => goto('/main/orders_client')}>Zamówienia</button>
+		<button on:click={logout}>Wyloguj</button>
+	</div>
+
+    <div class="warehouse">
 		<h2>Magazyn - Dostępne przedmioty</h2>
 		<div class="items">
 			{#each items as item}

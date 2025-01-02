@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-
-
     let username = '';
     let email = '';
     let password = '';
@@ -13,11 +11,13 @@
     async function handReg(event: Event) {
         event.preventDefault();
 
+        const role = 'admin'; // rola admina
+
         try {
             const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({username, email: email.toLowerCase(), password }),
+                body: JSON.stringify({username, email: email.toLowerCase(), password,role }),
                 credentials: 'same-origin'
             });
 
@@ -60,25 +60,22 @@
 {#if isLoggedIn}
     <div>
     <h2>Hi, {username}!</h2>
-<<<<<<< Updated upstream
-    <p>You are already registered in. Click <a href="/main/user_panel">redirect</a>.</p>
-=======
+
     <p>You are already registered in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
->>>>>>> Stashed changes
     </div>
 {:else}
     <div>
     <form on:submit={handReg}>
         <label>
-            Username:
-            <input type = "text" bind:value={username} required />
+            Admin Username:
+            <input type="username" bind:value={username} required />
         </label>
         <label>
-            Email:
+            Admin Email:
             <input type="email" bind:value={email} required />
         </label>
         <label>
-            Password:
+            Admin Password:
             <input type="password" bind:value={password} required />
         </label>
         <button type="submit">Register</button>

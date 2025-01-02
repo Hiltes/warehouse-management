@@ -7,6 +7,7 @@
     let message = '';
     let isLoggedIn = false;
     let username = '';
+    let userRole= '';
 
     // Funkcja logowania
     async function handleLogin(event: Event) {
@@ -29,6 +30,9 @@
                 if(userRole==='admin'){
                 goto('/main/admin/admin_panel');
             } else {
+                message = 'Invalid user role';
+            }
+        } else {
                 message = 'Invalid credentials.';
             }
         } catch (error) {
@@ -49,14 +53,17 @@
                 const data = await response.json();
                 isLoggedIn = data.success;
                 username = data.user?.email || ''; // Upewnij się, że user i username istnieją
+                userRole = data.user?.role || ''; // Upewnij się, że rola użytkownika istnieje
             } else {
                 isLoggedIn = false;
                 username = ''; // Wyczyszczenie nazwy użytkownika, jeśli sesja wygasła
+                userRole = ''; // Wyczyszczenie roli użytkownika
             }
         } catch (error) {
             console.error('Error checking login status:', error);
             isLoggedIn = false;
             username = ''; // Wyczyszczenie nazwy użytkownika w przypadku błędu
+            userRole = ''; // Wyczyszczenie roli użytkownika
         }
     }
 
@@ -66,21 +73,26 @@
     });
 </script>
 
-{#if isLoggedIn}
+{#if isLoggedIn && userRole === 'admin'}
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
         <p>You are already logged in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
     </div>
+{:else if isLoggedIn && userRole !== 'admin'}
+<div>
+    <p>You are logged in as {username}, but you do not have permission to access the admin panel.</p>
+    <p>{message}</p>
+</div>
 {:else}
     <div>
         <form on:submit={handleLogin}>
             <label>
-                <p>Email</p>
+                Admin Email:
                 <input type="email" bind:value={email} required />
             </label>
             <label>
-                <p>Password</p>
+               Admin Password:
                 <input type="password" bind:value={password} required />
             </label>
             <button type="submit">Login</button>
