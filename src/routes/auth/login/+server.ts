@@ -16,7 +16,7 @@ export async function POST({ request }: { request: Request }) {
             const token = jwt.sign({ id: userExists._id, email: userExists.email, role: userExists.role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
 
             const headers = new Headers();
-            headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);
+            headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=0`);
 
             return new Response(
                 JSON.stringify({ success: true, message: 'Login successful' }),
