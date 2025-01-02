@@ -14,7 +14,7 @@
         event.preventDefault();
 
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -44,7 +44,7 @@
     // Funkcja sprawdzająca stan zalogowania
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'GET',
                 credentials: 'same-origin'
             });

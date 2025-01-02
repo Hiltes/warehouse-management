@@ -13,7 +13,7 @@
 			const data = await response.json();
 
 			if (data.success) {
-				goto('/auth/login');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error during logout:', error);
@@ -22,14 +22,16 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+			const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
 
 			if (response.ok) {
 				const data = await response.json();
 				isLoggedIn = data.success;
+				console.log('User is logged in:', isLoggedIn);
 			} else {
 				isLoggedIn = false;
-				goto('/auth/login');
+				console.log('User is not logged in, redirecting...');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error checking login status:', error);

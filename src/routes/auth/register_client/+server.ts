@@ -11,8 +11,8 @@ export async function POST({ request }: { request: Request }) {
         const { username, email, password,role } = await request.json();
 
         const client_role = 'client';
-        const validRoles = ['user', 'admin'];
-        if (!validRoles.includes(client_role)) {
+        const validRoles = ['admin','client'];
+        if (!validRoles.includes(role)) {
             return json({ success: false, error: 'Invalid role' }, { status: 400 });
         }
         // Weryfikacja poprawności danych może być dodana w przyszłości
@@ -22,7 +22,7 @@ export async function POST({ request }: { request: Request }) {
         const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
         // Dodanie użytkownika do bazy danych
-        const userAdded = await addUser(username, email, hashedPassword,role);
+        const userAdded = await addUser(username, email, hashedPassword,client_role);
 
         if (userAdded) {
             // Generowanie tokenu JWT
