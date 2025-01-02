@@ -6,18 +6,14 @@
 
 	async function logout() {
 		try {
-<<<<<<<< Updated upstream:src/routes/main/user_panel/+page.svelte
-			const response = await fetch('/main/user_panel', {
-========
-			const response = await fetch('/main/admin/admin_panel', {
->>>>>>>> Stashed changes:src/routes/main/admin/admin_panel/+page.svelte
+			const response = await fetch('/main/client/client_panel', {
 				method: 'POST',
 				credentials: 'same-origin'
 			});
 			const data = await response.json();
 
 			if (data.success) {
-				goto('/auth/login');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error during logout:', error);
@@ -26,14 +22,16 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+			const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
 
 			if (response.ok) {
 				const data = await response.json();
 				isLoggedIn = data.success;
+				console.log('User is logged in:', isLoggedIn);
 			} else {
 				isLoggedIn = false;
-				goto('/auth/login');
+				console.log('User is not logged in, redirecting...');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error checking login status:', error);
@@ -45,13 +43,13 @@
 </script>
 
 {#if isLoggedIn === true}
-<div id="mySidenav" class="sidenav">
-    <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
-    <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
-    <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
-    <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
-    <button on:click={logout}>Wyloguj</button>
-</div>
+	<div id="mySidenav" class="sidenav">
+		<button on:click={() => goto('/mainclient//warehouse_client')}>Magazyn</button>
+		<button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
+		<button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
+		<button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+		<button on:click={logout}>Wyloguj</button>
+	</div>
 
     <div class="centered">
 	<h2>Witaj w Panelu użytkownia </h2>

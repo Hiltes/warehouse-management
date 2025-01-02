@@ -13,7 +13,7 @@
 
 
     async function addItem() {
-            const response = await fetch('/main/addItem', {
+            const response = await fetch('/main/admin/addItem', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -33,7 +33,7 @@
         
         async function fetchWarehouse() {
             try{
-                const res = await fetch('/main/addItem');
+                const res = await fetch('/main/admin/addItem');
             if (res.ok) {
                 warehouse = await res.json() as IWarehouse[];
                 console.log('Warehouse fetched:', warehouse); 
@@ -48,14 +48,14 @@
 
     onMount(async () => {		
         try {
-			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+			const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
 
 			if (response.ok) {
 				const data = await response.json();
 				isLoggedIn = data.success;
 			} else {
 				isLoggedIn = false;
-				goto('/auth/login');
+				goto('/auth/login_client');
 			}
 
 		} catch (error) {
@@ -69,14 +69,14 @@
 
     async function logout() {
 		try {
-			const response = await fetch('/main/user_panel', {
+			const response = await fetch('/main/client/client_panel', {
 				method: 'POST',
 				credentials: 'same-origin'
 			});
 			const data = await response.json();
 
 			if (data.success) {
-				goto('/auth/login');
+				goto('/auth/login_client');
 			}
 		} catch (error) {
 			console.error('Error during logout:', error);
@@ -92,8 +92,10 @@
 
 {#if isLoggedIn === true}
 	<div id="mySidenav" class="sidenav">
-		<button on:click={() => goto('/main/warehouse')}>Magazyn</button>
-		<button on:click={() => goto('/main/addItem')}>Dodaj Produkt</button>
+		<button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
+		<button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
+		<button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
+		<button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
 		<button on:click={logout}>Wyloguj</button>
 	</div>
 

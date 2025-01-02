@@ -7,13 +7,14 @@
     let message = '';
     let isLoggedIn = false;
     let username = '';
+    let userRole= '';
 
     // Funkcja logowania
     async function handleLogin(event: Event) {
         event.preventDefault();
 
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -26,13 +27,12 @@
                 await checkLoginStatus();
 
                 // Przekierowanie do user panelu po zalogowaniu
-<<<<<<< Updated upstream
-                goto('/main/user_panel');
-=======
-                if(userRole==='admin'){
-                goto('/main/admin/admin_panel');
->>>>>>> Stashed changes
+                if(userRole==='client'){
+                goto('/main/client/client_panel');
             } else {
+                message = 'Invalid user role';
+            }
+        } else {
                 message = 'Invalid credentials.';
             }
         } catch (error) {
@@ -44,7 +44,7 @@
     // Funkcja sprawdzająca stan zalogowania
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -53,14 +53,17 @@
                 const data = await response.json();
                 isLoggedIn = data.success;
                 username = data.user?.email || ''; // Upewnij się, że user i username istnieją
+                userRole = data.user?.role || ''; // Upewnij się, że rola użytkownika istnieje
             } else {
                 isLoggedIn = false;
                 username = ''; // Wyczyszczenie nazwy użytkownika, jeśli sesja wygasła
+                userRole = ''; // Wyczyszczenie roli użytkownika
             }
         } catch (error) {
             console.error('Error checking login status:', error);
             isLoggedIn = false;
             username = ''; // Wyczyszczenie nazwy użytkownika w przypadku błędu
+            userRole = ''; // Wyczyszczenie roli użytkownika
         }
     }
 
@@ -70,40 +73,36 @@
     });
 </script>
 
-{#if isLoggedIn}
+{#if isLoggedIn && userRole === 'client'}
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
-<<<<<<< Updated upstream
-        <p>You are already logged in. Click <a href="/main/user_panel">redirect</a>.</p>
-=======
-        <p>You are already logged in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
->>>>>>> Stashed changes
+        <p>You are already logged in. Click <a href="/main/client/client_panel">redirect</a>.</p>
     </div>
+{:else if isLoggedIn && userRole !== 'client'}
+<div>
+    <p>You are logged in as {username}, but you do not have permission to access the client panel.</p>
+    <p>{message}</p>
+</div>
 {:else}
     <div>
         <form on:submit={handleLogin}>
             <label>
-                <p>Email</p>
+                Client Email:
                 <input type="email" bind:value={email} required />
             </label>
             <label>
-                <p>Password</p>
+                Client Password:
                 <input type="password" bind:value={password} required />
             </label>
             <button type="submit">Login</button>
-<<<<<<< Updated upstream
-            
-            <p>Don't have an account? <a href="/auth/register">Sign up!</a></p>
-=======
             <div class="centered">
-            <a href='/auth/register'>Register</a> <br>
-            <a href='/auth/login_client'>Switch to client panel</a><br>
-            <a href='/auth/password_admin'>Change password</a>
+            <a href='/auth/register_client'>Register</a><br>
+            <a href='/auth/login'>Switch to admin panel</a><br>
+            <a href='/auth/password_client'>Change password</a>
             </div>
         </form>
 
->>>>>>> Stashed changes
         <p>{message}</p>
     </div>
 {/if}

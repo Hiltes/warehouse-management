@@ -9,7 +9,11 @@
 
 	async function logout() {
 		try {
+<<<<<<< Updated upstream:src/routes/main/warehouse/+page.svelte
 			const response = await fetch('/main/user_panel', {
+=======
+			const response = await fetch('/main/admin/admin_panel', {
+>>>>>>> Stashed changes:src/routes/main/admin/warehouse/+page.svelte
 				method: 'POST',
 				credentials: 'same-origin'
 			});
@@ -44,7 +48,7 @@
 
 	async function fetchItems() {
 		try {
-			const res = await fetch('/main/warehouse', {
+			const res = await fetch('/main/admin/warehouse', {
 				headers: {
 					'Content-Type': 'application/json'
 				},
@@ -69,11 +73,13 @@
 {#if error}
 	<p class="error">{error}</p>
 {:else if items.length > 0 && isLoggedIn === true}
-	<div id="mySidenav" class="sidenav">
-		<button on:click={() => goto('/main/warehouse')}>Magazyn</button>
-		<button on:click={() => goto('/main/addItem')}>Dodaj Produkt</button>
-		<button on:click={logout}>Wyloguj</button>
-	</div>
+<div id="mySidenav" class="sidenav">
+    <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
+    <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
+    <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
+    <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
+    <button on:click={logout}>Wyloguj</button>
+</div>
 	<div class="warehouse">
 		<h2>Magazyn - Dostępne przedmioty</h2>
 		<div class="items">

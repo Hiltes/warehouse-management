@@ -14,7 +14,11 @@
                 isLoggedIn = data.success;
                 if (isLoggedIn) {
                 
+<<<<<<< Updated upstream
                     goto('/main/user_panel');
+=======
+                    goto('/main/admin/admin_panel');
+>>>>>>> Stashed changes
                 }
             } else {
                 isLoggedIn = false; // Traktuj jako niezalogowanego

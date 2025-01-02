@@ -1,23 +1,24 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-
-
-    let username = '';
+	let username = '';
     let email = '';
     let password = '';
     let message = '';
     let isLoggedIn = false;
 
-    // Funkcja logowania
-    async function handReg(event: Event) {
+// Funkcja logowania
+async function handReg(event: Event) {
         event.preventDefault();
 
+        const role = 'client'; // rola admina
+
+
         try {
-            const response = await fetch('/auth/register', {
+            const response = await fetch('/auth/register_client', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({username, email: email.toLowerCase(), password }),
+                body: JSON.stringify({username, email: email.toLowerCase(), password, role }),
                 credentials: 'same-origin'
             });
 
@@ -37,7 +38,7 @@
     // Funkcja sprawdzająca stan zalogowania
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -60,30 +61,25 @@
 {#if isLoggedIn}
     <div>
     <h2>Hi, {username}!</h2>
-<<<<<<< Updated upstream
-    <p>You are already registered in. Click <a href="/main/user_panel">redirect</a>.</p>
-=======
-    <p>You are already registered in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
->>>>>>> Stashed changes
+    <p>You are already registered in. Click <a href="/main/client/client_panel">redirect</a>.</p>
     </div>
-{:else}
+	{:else}
     <div>
     <form on:submit={handReg}>
         <label>
-            Username:
-            <input type = "text" bind:value={username} required />
+            Client Username:
+            <input type="username" bind:value={username} required />
         </label>
         <label>
-            Email:
+            Client Email:
             <input type="email" bind:value={email} required />
         </label>
         <label>
-            Password:
+            Client Password:
             <input type="password" bind:value={password} required />
         </label>
         <button type="submit">Register</button>
-        <p class="wrongmessage">{message}</p>
-        <p>Click <a href="/auth/login">ESCAPE!</a> if you want to.</p>
     </form>
+    <p>{message}</p>
     </div>
 {/if}

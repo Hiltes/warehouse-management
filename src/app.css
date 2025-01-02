@@ -2,94 +2,144 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-
 /* Ustawienia ogólne */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #a9a9a9;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
 }
 
-/* Formularz logowania */
-form {
+/* Sidebar */
+.sidenav {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav button {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    width: 90%;
+    font-size: 25px;
+    color: #a9a9a9;
+    display: block;
+    transition: 0.3s;
+    margin-left: 5%;
+}
+
+.sidenav button:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+/* Główny kontener */
+.main {
+    margin-left: 250px;  /* Kontener główny ma margines po lewej stronie dla sidebar */
+    padding: 2rem;
+    flex: 1;
+    width: 100%;
+}
+
+.search-form {
     background-color: #fff;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
-}
-
-/* Nagłówek */
-form h1 {
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 2rem;
     text-align: center;
-    color: #333;
+    align-items: center;
 }
 
-/* Etykiety i pola formularza */
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #555;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-input {
-    width: 100%;
+.search-form input {
+    width: calc(100% - 20px); /* Pełna szerokość z marginesem */
     padding: 0.6rem;
-    margin-bottom: 0.3rem;
-    border: 1px solid #ccc;
+    margin-bottom: 1rem;
     border-radius: 4px;
     font-size: 1.2rem;
     box-sizing: border-box;
 }
 
-input:focus {
-    border-color: #007BFF;
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 0, 85, 0.5);
-}
-
-/* Przyciski */
-button {
+.search-form button {
     width: 100%;
     padding: 0.8rem;
     background-color: #007BFF;
-    color: #fff;
+    color: white;
     border: none;
     border-radius: 4px;
     font-size: 1rem;
-    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-bottom: 10px;
 }
 
-button:hover {
+.search-form button:hover {
     background-color: #0056b3;
 }
 
-/* Wiadomość */
-p {
+/* Wyniki wyszukiwania */
+.items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+.item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #007BFF;
+}
+
+.item p {
     font-size: 0.9rem;
-    margin-top: 1rem;
-    color: #333;
+    color: #555;
 }
 
-
-a {
-    color:blue;
-    text-decoration:underline;
+.item strong {
+    font-weight: bold;
 }
 
+/* Responsywność */
+@media screen and (max-width: 1024px) {
+    .items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
+@media screen and (max-width: 768px) {
+    .items {
+        grid-template-columns: 1fr;
+    }
+}
