@@ -40,16 +40,27 @@
 	});
 
 
+    let isSidebarOpen = false;
+    function toggleSidebar() {
+        isSidebarOpen = !isSidebarOpen;
+    }
 </script>
 
 {#if isLoggedIn === true}
-	<div id="mySidenav" class="sidenav">
-		<button on:click={() => goto('/mainclient//warehouse_client')}>Magazyn</button>
-		<button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
-		<button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
-		<button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
-		<button on:click={logout}>Wyloguj</button>
-	</div>
+
+<div class="header {isSidebarOpen ? 'open' : ''}">
+<button on:click={toggleSidebar}>
+	{isSidebarOpen ? 'Zamknij' : 'Otwórz'} menu
+</button>
+</div>
+
+    <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
+        <button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
+        <button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
+        <button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
+        <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+        <button on:click={logout}>Wyloguj</button>
+    </div>
 
     <div class="centered">
 	<h2>Witaj w Panelu użytkownia </h2>

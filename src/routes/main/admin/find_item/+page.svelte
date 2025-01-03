@@ -78,24 +78,35 @@
             );
         }
     }
+
+    let isSidebarOpen = false;
+    function toggleSidebar() {
+        isSidebarOpen = !isSidebarOpen;
+    }
 </script>
 
-{#if error}
-    <p class="error">{error}</p>
-{:else if isLoggedIn === true}
-    <div id="mySidenav" class="sidenav">
+{#if isLoggedIn === true}
+
+<div class="header {isSidebarOpen ? 'open' : ''}">
+<button on:click={toggleSidebar}>
+	{isSidebarOpen ? 'Zamknij' : 'Otwórz'} menu
+</button>
+</div>
+
+    <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
         <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
         <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
         <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
         <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
         <button on:click={logout}>Wyloguj</button>
+
     </div>
     <div class="main">
         <!-- Search Form -->
         <div class="search-form" >
             <h2>Nazwa Przedmiotu:</h2>
             <input type="text" bind:value={searchQuery} placeholder="Wyszukaj produkt..." on:input={searchItems} />
-            <button on:click={searchItems}>Szukaj</button>
+            <button class="default" on:click={searchItems}>Szukaj</button>
         </div>
 
         <!-- Search Results -->

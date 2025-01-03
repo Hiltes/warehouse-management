@@ -78,7 +78,7 @@
             Admin Password:
             <input type="password" bind:value={password} required />
         </label>
-        <button type="submit">Register</button>
+        <button class="default" type="submit">Register</button>
         <p class="wrongmessage">{message}</p>
         <p>Click <a href="/auth/login">ESCAPE!</a> if you want to.</p>
     </form>

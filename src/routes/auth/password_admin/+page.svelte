@@ -37,5 +37,5 @@
             New Password:
             <input type="password" bind:value={newPassword} required />
         </label>
-        <button type="submit">Change</button>
+        <button class="default" type="submit">Change</button>
     </div>

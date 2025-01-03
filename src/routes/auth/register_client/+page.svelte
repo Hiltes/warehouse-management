@@ -78,7 +78,7 @@ async function handReg(event: Event) {
             Client Password:
             <input type="password" bind:value={password} required />
         </label>
-        <button type="submit">Register</button>
+        <button class="default" type="submit">Register</button>
     </form>
     <p>{message}</p>
     </div>

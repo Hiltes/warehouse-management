@@ -83,21 +83,27 @@
 		}
 	}
 
+    let isSidebarOpen = false;
+    function toggleSidebar() {
+        isSidebarOpen = !isSidebarOpen;
+    }
 </script>
 
-
-
-
-
-
 {#if isLoggedIn === true}
-<div id="mySidenav" class="sidenav">
-    <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
-    <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
-    <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
-    <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
-    <button on:click={logout}>Wyloguj</button>
+
+<div class="header {isSidebarOpen ? 'open' : ''}">
+<button on:click={toggleSidebar}>
+	{isSidebarOpen ? 'Zamknij' : 'Otwórz'} menu
+</button>
 </div>
+
+    <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
+        <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
+        <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
+        <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
+        <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
+        <button on:click={logout}>Wyloguj</button>
+    </div>
 
     <form on:submit|preventDefault={addItem}>
         <h1>Dodaj Produkt do Magazynu</h1>
@@ -118,7 +124,7 @@
             {/each}
         </select>
      
-        <button type="submit" class="btn-submit" style="margin-top: 30px;">Dodaj Przedmiot</button>
+        <button type="submit" class="default" style="margin-top: 30px;">Dodaj Przedmiot</button>
      
      </form>
 {:else if isLoggedIn === null}

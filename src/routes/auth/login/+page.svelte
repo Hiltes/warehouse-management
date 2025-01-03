@@ -95,7 +95,7 @@
                Admin Password:
                 <input type="password" bind:value={password} required />
             </label>
-            <button type="submit">Login</button>
+            <button class="default" type="submit">Login</button>
             <div class="centered">
             <a href='/auth/register'>Register</a> <br>
             <a href='/auth/login_client'>Switch to client panel</a><br>
