@@ -13,11 +13,13 @@
     async function handleLogin(event: Event) {
         event.preventDefault();
 
+        const role = 'client';
+
         try {
             const response = await fetch('/auth/login_client', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ username,email, password,role }),
                 credentials: 'same-origin'
             });
 
