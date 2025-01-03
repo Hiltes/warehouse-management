@@ -97,7 +97,9 @@
             </label>
             <button type="submit">Login</button>
             <a href='/auth/register'>Register</a>
+            <br>
             <a href='/auth/login_client'>Switch to client panel</a>
+            <br>
             <a href='/auth/password_admin'>Change password</a>
         </form>
 
