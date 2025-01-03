@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import jwt, {type JwtPayload} from 'jsonwebtoken';
 import { SECRET_JWT_KEY, TOKEN_EXPIRY_TIME } from '$env/static/private';
-import { checkUser } from '$db/api/user'; // Upewnij się, że ta funkcja sprawdza hasło z bcrypt
+import { checkClient } from '$db/api/client'; // Upewnij się, że ta funkcja sprawdza hasło z bcrypt
 
 
 export async function POST({ request }: { request: Request }) {
@@ -9,12 +9,12 @@ export async function POST({ request }: { request: Request }) {
         const { email, password } = await request.json();
 
         // Sprawdzenie czy użytkownik istnieje
-        const userExists = await checkUser(email, password); // Funkcja powinna tylko sprawdzić, czy użytkownik istnieje w bazie danych
+        const clientExists = await checkClient(email, password); // Funkcja powinna tylko sprawdzić, czy użytkownik istnieje w bazie danych
 
         
         // Jeśli użytkownik istnieje, porównaj hasło
-        if (userExists) {
-            const token = jwt.sign({ id: userExists._id, email: userExists.email, role: userExists.role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
+        if (clientExists) {
+            const token = jwt.sign({ id: clientExists._id, email: clientExists.email, role: clientExists.role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
 
             const headers = new Headers();
             headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);

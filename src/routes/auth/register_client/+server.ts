@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import { SECRET_JWT_KEY } from '$env/static/private';
-import { addUser } from '$db/api/user';
+import { addClient } from '$db/api/client';
 import bcrypt from 'bcrypt';
 import { TOKEN_EXPIRY_TIME } from '$env/static/private';
 
@@ -22,9 +22,9 @@ export async function POST({ request }: { request: Request }) {
         const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
         // Dodanie użytkownika do bazy danych
-        const userAdded = await addUser(username, email, hashedPassword,client_role);
+        const clientAdded = await addClient(username, email, hashedPassword,client_role);
 
-        if (userAdded) {
+        if (clientAdded) {
             // Generowanie tokenu JWT
             const token = jwt.sign({ email,role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
 
