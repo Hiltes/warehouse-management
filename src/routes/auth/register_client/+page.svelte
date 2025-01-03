@@ -56,6 +56,11 @@ async function handReg(event: Event) {
         }
     }
 
+    // Sprawdzenie stanu logowania przy załadowaniu strony
+    onMount(() => {
+        checkLoginStatus();
+    });
+
 </script>
 
 {#if isLoggedIn}
