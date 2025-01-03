@@ -48,7 +48,7 @@ export async function GET({ request }: { request: Request }) {
         if (decoded.role !== 'client') {
             return json({ success: false, error: 'Unauthorized access' }, { status: 403 });
         }
-        return json({ success: true, user: decoded }, { status: 200 });
+        return json({ success: true, client: decoded }, { status: 200 });
     } catch {
         return json({ success: false }, { status: 401 });
     }

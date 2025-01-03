@@ -14,7 +14,7 @@ const clientSchema = new Schema<IClient>({
     username: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, enum: ['admin', 'client']}
+    role: { type: String, enum: ['client']}
 },
 {
     versionKey: false

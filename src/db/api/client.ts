@@ -9,7 +9,7 @@ export async function addClient(username: string, email: string, password: strin
         const doesClientExist = await checkClientV2(email);
 
         if (doesClientExist) {
-            console.log("User already exists");
+            console.log("Client already exists");
             return false; // Nie dodajemy użytkownika, jeśli już istnieje
         }
 
@@ -61,7 +61,7 @@ export async function checkClient(email: string, password: string): Promise<ICli
     try {
         const client = await Client.findOne({ email });
         if (client) {
-            console.log("User found:", client);
+            console.log("Client found:", client);
             return client; // Zwracaj obiekt użytkownika
         } else {
             console.log("Client not found");
