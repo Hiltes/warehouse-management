@@ -150,8 +150,6 @@ export async function changePassword(email: string, oldPassword: string, newPass
 
 export async function deleteClient( username: string, email:string ) {
     try {
-        
-
         // Find the client
         const client = await Client.findOne({ email, username });
 

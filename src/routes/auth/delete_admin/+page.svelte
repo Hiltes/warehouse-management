@@ -8,7 +8,28 @@
 
     // Check if the user is logged in
     async function checkLoginStatus() {
-        // Same as your existing implementation
+        try {
+            const response = await fetch('/auth/login', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                isLoggedIn = data.success;
+                username = data.client?.username || ''; // Upewnij się, że user i username istnieją
+                email = data.client?.email || ''; // Upewnij się, że rola użytkownika istnieje
+            } else {
+                isLoggedIn = false;
+                username = ''; // Wyczyszczenie nazwy użytkownika, jeśli sesja wygasła
+                email = ''; // Wyczyszczenie roli użytkownika
+            }
+        } catch (error) {
+            console.error('Error checking login status:', error);
+            isLoggedIn = false;
+            username = ''; // Wyczyszczenie nazwy użytkownika w przypadku błędu
+            email = ''; // Wyczyszczenie roli użytkownika
+        }
     }
 
     // Function to handle account deletion

@@ -5,12 +5,11 @@
     let username = '';
     let message = '';
     let isLoggedIn= false;
-    let userRole="";
 
     // Check if the user is logged in
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/auth/delete_client', {
+            const response = await fetch('/auth/login_client', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -18,18 +17,18 @@
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
-                username = data.client?.email || ''; // Upewnij się, że user i username istnieją
-                userRole = data.client?.role || ''; // Upewnij się, że rola użytkownika istnieje
+                username = data.client?.username || ''; // Upewnij się, że user i username istnieją
+                email = data.client?.email || ''; // Upewnij się, że rola użytkownika istnieje
             } else {
                 isLoggedIn = false;
                 username = ''; // Wyczyszczenie nazwy użytkownika, jeśli sesja wygasła
-                userRole = ''; // Wyczyszczenie roli użytkownika
+                email = ''; // Wyczyszczenie roli użytkownika
             }
         } catch (error) {
             console.error('Error checking login status:', error);
             isLoggedIn = false;
             username = ''; // Wyczyszczenie nazwy użytkownika w przypadku błędu
-            userRole = ''; // Wyczyszczenie roli użytkownika
+            email = ''; // Wyczyszczenie roli użytkownika
         }
     }
 

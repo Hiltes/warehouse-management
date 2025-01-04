@@ -47,7 +47,7 @@ export async function getUsers() {
     }
 }
 
-export async function getUserById(userId: number) {
+export async function getUserById(userId: string) {
     try {
         // Fetch the user document by user ID
         const user = await User.findById(userId).exec();
@@ -147,23 +147,21 @@ export async function changePassword(email: string, oldPassword: string, newPass
     }
 }
 
-export async function deleteUser({ request }: { request: Request }) {
+export async function deleteUser(email:string,username:string){
     try {
-        const { email, username } = await request.json();
 
         // Find the client
         const user = await User.findOne({ email, username });
 
         if (!user) {
-            return json({ success: false, error: 'Client not found' }, { status: 404 });
+            console.log('Client not found');
         }
 
         // Delete the client
         await User.findByIdAndDelete(user._id);
 
-        return json({ success: true, message: 'Client deleted successfully' }, { status: 200 });
+        console.log('Client deleted succesfully');
     } catch (error) {
-        console.error('Error deleting client:', error);
-        return json({ success: false, error: 'Internal server error' }, { status: 500 });
+        console.log('Error deleting client');
     }
 }
