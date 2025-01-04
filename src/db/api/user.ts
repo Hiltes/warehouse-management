@@ -1,7 +1,7 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
 import type { IUser } from '$db/models/user';
 import { json } from '@sveltejs/kit';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 // Dodanie nowego użytkownika
 export async function addUser(username: string, email: string, password: string, role: string): Promise<boolean> {
@@ -80,6 +80,7 @@ export async function checkUser(email: string, password: string): Promise<IUser 
         if (user) {
             console.log("User found:", user);
             return user; // Zwracaj obiekt użytkownika
+            
         } else {
             console.log("User not found");
             return null; // Brak użytkownika
@@ -122,20 +123,23 @@ export async function changePassword(email: string, oldPassword: string, newPass
 
            //Pokaż dane użytkownika
            console.log("User found:", { username: user.username, email: user.email, role: user.role });
-         
 
-        // Sprawdzenie starego hasła
-        const isMatch = await bcrypt.compare(oldPassword.trim(), user.password);
-        console.log("Comparing:", oldPassword.trim(), user.password, "Match:", isMatch);
+           
+        // Check if the current password is correct
+        const hashPass = /^\$2y\$/.test(user.password) ? '$2a$' + user.password.slice(4) : user.password;
+        const isMatch = await bcrypt.compare(oldPassword, hashPass);
+        console.log(oldPassword,user.password,isMatch);
         if (!isMatch) {
-            console.log("Old password is incorrect");
-            return false; // Stare hasło jest niepoprawne
+            console.log("Incorrect email or current password");
+            return false; // Current password is incorrect
         }
+         
+   // Haszowanie nowego hasła
+   const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-
-        // Haszowanie nowego hasła
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedNewPassword;
+ 
+     // Aktualizacja hasła w bazie
+     user.password = hashedNewPassword;
 
         // Zapisz zmiany
         await user.save();
