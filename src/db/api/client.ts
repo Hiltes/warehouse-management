@@ -1,5 +1,6 @@
 import Client from '$db/models/client'; // Zakładamy, że model User jest w pliku models/User
 import type { IClient } from '$db/models/client';
+import { json } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 
 // Dodanie nowego użytkownika
@@ -46,15 +47,32 @@ export async function getClients() {
     }
 }
 
+export async function getClientById(userId: string) {
+    try {
+        // Fetch the user document by user ID
+        const user = await Client.findById(userId).exec();
+        return user; // Mongoose will return null if not found
+    } catch (error) {
+        console.error('Error fetching user by ID:', error);
+        throw new Error('Database query failed'); // Handle error appropriately
+    }
+}
+
 // Usunięcie użytkownika po ID
 export async function deleteClientById(clientId: string) {
     try {
-        await Client.findByIdAndDelete(clientId); // Usuwanie użytkownika po ID
+        const result = await Client.findByIdAndDelete(clientId); // Usuwanie użytkownika po ID
+        if (!result) {
+            console.log("Client not found for deletion");
+            return false;
+        }
         console.log("Client deleted successfully");
+        return true;
     } catch (error) {
         console.error("Error deleting client:", error);
     }
 }
+
 
 // Sprawdzenie, czy użytkownik istnieje
 export async function checkClient(email: string, password: string): Promise<IClient | null> {
@@ -127,5 +145,26 @@ export async function changePassword(email: string, oldPassword: string, newPass
     } catch (error) {
         console.error("Error changing password:", error);
         return false;
+    }
+}
+
+export async function deleteClient( username: string, email:string ) {
+    try {
+        
+
+        // Find the client
+        const client = await Client.findOne({ email, username });
+
+        if (!client) {
+            return json({ success: false, error: 'Client not found' }, { status: 404 });
+        }
+
+        // Delete the client
+        await Client.findByIdAndDelete(client._id);
+
+        return json({ success: true, message: 'Client deleted successfully' }, { status: 200 });
+    } catch (error) {
+        console.error('Error deleting client:', error);
+        return json({ success: false, error: 'Internal server error' }, { status: 500 });
     }
 }

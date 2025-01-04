@@ -1,5 +1,6 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
 import type { IUser } from '$db/models/user';
+import { json } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 
 // Dodanie nowego użytkownika
@@ -46,11 +47,27 @@ export async function getUsers() {
     }
 }
 
+export async function getUserById(userId: number) {
+    try {
+        // Fetch the user document by user ID
+        const user = await User.findById(userId).exec();
+        return user; // Mongoose will return null if not found
+    } catch (error) {
+        console.error('Error fetching user by ID:', error);
+        throw new Error('Database query failed'); // Handle error appropriately
+    }
+}
+
 // Usunięcie użytkownika po ID
 export async function deleteUserById(userId: string) {
     try {
-        await User.findByIdAndDelete(userId); // Usuwanie użytkownika po ID
-        console.log("User deleted successfully");
+        const result = await User.findByIdAndDelete(userId); // Usuwanie użytkownika po ID
+        if (!result) {
+            console.log("Client not found for deletion");
+            return false;
+        }
+        console.log("Client deleted successfully");
+        return true;
     } catch (error) {
         console.error("Error deleting user:", error);
     }
@@ -127,5 +144,26 @@ export async function changePassword(email: string, oldPassword: string, newPass
     } catch (error) {
         console.error("Error changing password:", error);
         return false;
+    }
+}
+
+export async function deleteUser({ request }: { request: Request }) {
+    try {
+        const { email, username } = await request.json();
+
+        // Find the client
+        const user = await User.findOne({ email, username });
+
+        if (!user) {
+            return json({ success: false, error: 'Client not found' }, { status: 404 });
+        }
+
+        // Delete the client
+        await User.findByIdAndDelete(user._id);
+
+        return json({ success: true, message: 'Client deleted successfully' }, { status: 200 });
+    } catch (error) {
+        console.error('Error deleting client:', error);
+        return json({ success: false, error: 'Internal server error' }, { status: 500 });
     }
 }

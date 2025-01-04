@@ -103,6 +103,8 @@
             <a href='/auth/login_client'>Switch to client panel</a>
             <br>
             <a href='/auth/password_admin'>Change password</a>
+            <br>
+            <a href='/auth/delete_admin'>Delete account</a>
         </form>
 
         <p>{message}</p>
