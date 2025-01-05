@@ -39,7 +39,7 @@ export async function POST({ request }: RequestEvent){
 
    } catch (error) {
       console.error("Error adding item: ", error);
-      return json({ error: 'Failed to add item' }, { status: 500 });
+      return json({ error: error.message || 'Unknown server error' }, { status: 500 });
    }
 
 }
