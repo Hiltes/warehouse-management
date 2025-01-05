@@ -2,10 +2,15 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { IItem } from '$db/models/item';
+	import type { IWarehouse } from '$db/models/warehouse'; // Zmień ścieżkę na właściwą
 
+	let warehouse: IWarehouse[] = [];
+	
 	let isLoggedIn: boolean | null = null; 
 	let items: IItem[] = [];
 	let error = '';
+	
+   let selectedWarehouse = 'all';
 
 	async function logout() {
 		try {
@@ -23,8 +28,41 @@
 		}
 	}
 
-	onMount(async () => {
+
+	
+
+	async function fetchWarehouse() {
+            try{
+                const res = await fetch('/main/admin/addItem');
+            if (res.ok) {
+                warehouse = await res.json() as IWarehouse[];
+                console.log('Warehouse fetched:', warehouse); 
+            } else {
+                console.error('Error fetching warehouse' , res.statusText);
+
+            }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+   }
+
+	async function fetchItems() {
 		try {
+			const query = selectedWarehouse === 'all' ? '' : `?warehouse=${selectedWarehouse}`;
+			const response = await fetch(`/main/admin/warehouse${query}`);
+			if (response.ok) {
+				items = await response.json();
+				console.log('Items fetched:', items); 
+			} else {
+				console.error('Failed to fetch items:', response.statusText);
+			}
+		} catch (err) {
+			console.error('Error fetching items:', err);
+		}
+	}
+
+	 onMount(async () => {		
+        try {
 			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
 
 			if (response.ok) {
@@ -34,36 +72,16 @@
 				isLoggedIn = false;
 				goto('/auth/login');
 			}
+
 		} catch (error) {
 			console.error('Error checking login status:', error);
 			isLoggedIn = false;
 		}
 
-		fetchItems();
-	});
+        fetchWarehouse();
+		  await fetchItems();
+    });
 
-	async function fetchItems() {
-		try {
-			const res = await fetch('/main/admin/warehouse', {
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				credentials: 'include'
-			});
-
-			if (res.ok) {
-				items = await res.json();
-			} else if (res.status === 401) {
-				error = 'Unauthorized. Redirecting to login page.';
-				setTimeout(() => goto('/api/auth'), 3000);
-			} else {
-				error = 'Failed to fetch items.';
-			}
-		} catch (err) {
-			console.error(err);
-			error = 'Error fetching items.';
-		}
-	}
 	
 	let isSidebarOpen = false;
     function toggleSidebar() {
@@ -86,7 +104,18 @@
         <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
         <button on:click={logout}>Wyloguj</button>
     </div>
+	
+
 	<div class="warehouse">
+		<div>
+			<label style="margin-top: 80px" for="warehouse">Wybierz magazyn:</label>
+			<select id="warehouse" bind:value={selectedWarehouse} on:change={fetchItems}>
+				 <option value="all">Wszystkie</option>
+				 {#each warehouse as w}
+			 <option value={w._id}>{w.warehouse_type}</option>
+			{/each}
+				</select>
+		</div>
 		<h2>Magazyn - Dostępne przedmioty</h2>
 		<div class="items">
 			{#each items as item}
