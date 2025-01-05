@@ -172,7 +172,6 @@ export async function changePassword(email: string, oldPassword: string, newPass
         // Sprawdzenie starego hasła
         const hashPass = /^\$2y\$/.test(client.password) ? '$2a$' + client.password.slice(4) : client.password;
         const isMatch = await bcryptjs.compare(oldPassword, hashPass);
-        console.log("Comparing:", oldPassword, client.password, "Match:", isMatch);
         if (!isMatch) {
             console.log("Old password is incorrect");
             return false; // Stare hasło jest niepoprawne

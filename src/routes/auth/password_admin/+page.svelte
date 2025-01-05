@@ -39,4 +39,7 @@
         </label>
         <button type="submit">Change</button>
         </form>
+        {#if message}
+        <p>{message}</p>
+    {/if}
     </div>

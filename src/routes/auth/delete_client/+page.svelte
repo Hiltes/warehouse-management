@@ -64,7 +64,7 @@
 </script>
 
     <div>
-        <h2>Delete Your Account</h2>
+        <h2>Delete Your Client Account</h2>
         <form on:submit={handleDelete}>
             <label>
                 Email:
@@ -76,5 +76,7 @@
             </label>
             <button type="submit">Delete Account</button>
         </form>
+        {#if message}
         <p>{message}</p>
+    {/if}
     </div>

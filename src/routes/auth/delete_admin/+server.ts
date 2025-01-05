@@ -14,10 +14,7 @@ const headers = new Headers();
 headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);
 
 console.log(headers);
-const cookie = request.headers.get('cookie');
-    console.log("Cookie:", cookie);
-console.log("Token:", token);
-console.log("Token:", id);
+
 
     if (!token) {
         return json({ success: false, error: 'Unauthorized' }, { status: 401 });
