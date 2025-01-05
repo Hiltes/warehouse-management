@@ -117,7 +117,6 @@ export async function checkUser(email: string, password: string): Promise<IUser 
         if (user) {
             console.log("User found:", user);
             const isMatch = await bcryptjs.compare(password.trim(), user.password.trim());
-            console.log(user.password);
             if (isMatch) {
                 return user; // Zwróć obiekt użytkownika, jeśli hasła się zgadzają
             } else {

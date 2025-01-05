@@ -1,7 +1,7 @@
 import Client from '$db/models/client'; // Zakładamy, że model User jest w pliku models/User
 import type { IClient } from '$db/models/client';
 import { json } from '@sveltejs/kit';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 // Dodanie nowego użytkownika
 export async function addClient(username: string, email: string, password: string, role: string): Promise<boolean> {
@@ -16,14 +16,14 @@ export async function addClient(username: string, email: string, password: strin
 
         // Tworzenie nowego użytkownika
         
-        const hashedPassword = await bcrypt.hash(password, 10); // Haszowanie hasła
+        const client = new Client({ username, email, password,role });
         const newClient = new Client({
             username,
             email,
-            password: hashedPassword,
+            password,
             role
         });
-
+        client.password=bcryptjs.hashSync(password,10);
         
         // Zapisanie nowego użytkownika w bazie
         await newClient.save();
@@ -116,9 +116,7 @@ export async function checkClient(email: string, password: string): Promise<ICli
         const client = await Client.findOne({ email });
         if (client) {
             console.log("Client found:", client);
-            console.log(client.password);
-            console.log(password);
-            const isMatch = await bcrypt.compare(password.trim(), client.password);
+            const isMatch = await bcryptjs.compare(password.trim(), client.password.trim());
                         if (isMatch) {
                             return client; // Zwracaj obiekt użytkownika
                         }else {
@@ -172,8 +170,9 @@ export async function changePassword(email: string, oldPassword: string, newPass
          
 
         // Sprawdzenie starego hasła
-        const isMatch = await bcrypt.compare(oldPassword.trim(), client.password);
-        console.log("Comparing:", oldPassword.trim(), client.password, "Match:", isMatch);
+        const hashPass = /^\$2y\$/.test(client.password) ? '$2a$' + client.password.slice(4) : client.password;
+        const isMatch = await bcryptjs.compare(oldPassword, hashPass);
+        console.log("Comparing:", oldPassword, client.password, "Match:", isMatch);
         if (!isMatch) {
             console.log("Old password is incorrect");
             return false; // Stare hasło jest niepoprawne
@@ -181,7 +180,7 @@ export async function changePassword(email: string, oldPassword: string, newPass
 
 
         // Haszowanie nowego hasła
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        const hashedNewPassword = await bcryptjs.hash(newPassword, 10);
         client.password = hashedNewPassword;
 
         // Zapisz zmiany
