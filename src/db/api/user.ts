@@ -1,7 +1,7 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
 import type { IUser } from '$db/models/user';
 import { json } from '@sveltejs/kit';
-import bcrypt from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 
 // Dodanie nowego użytkownika
 export async function addUser(username: string, email: string, password: string, role: string): Promise<boolean> {
@@ -15,14 +15,15 @@ export async function addUser(username: string, email: string, password: string,
         }
 
         // Tworzenie nowego użytkownika
-        
-        const hashedPassword = await bcrypt.hash(password, 10); // Haszowanie hasła
+        const user = new User({ username, email, password,role });
+         // Haszowanie hasła
         const newUser = new User({
             username,
             email,
-            password: hashedPassword,
+            password,
             role
         });
+        user.password=bcryptjs.hashSync(password,10);
 
         
         // Zapisanie nowego użytkownika w bazie
@@ -115,7 +116,8 @@ export async function checkUser(email: string, password: string): Promise<IUser 
         const user = await User.findOne({ email });
         if (user) {
             console.log("User found:", user);
-            const isMatch = await bcrypt.compare(password, String(user.password));
+            const isMatch = await bcryptjs.compare(password.trim(), user.password.trim());
+            console.log(user.password);
             if (isMatch) {
                 return user; // Zwróć obiekt użytkownika, jeśli hasła się zgadzają
             } else {
@@ -168,7 +170,7 @@ export async function changePassword(email: string, oldPassword: string, newPass
            
         // Check if the current password is correct
         const hashPass = /^\$2y\$/.test(user.password) ? '$2a$' + user.password.slice(4) : user.password;
-        const isMatch = await bcrypt.compare(oldPassword, hashPass);
+        const isMatch = await bcryptjs.compare(oldPassword, hashPass);
         console.log(oldPassword,user.password,isMatch);
         if (!isMatch) {
             console.log("Incorrect email or current password");
@@ -176,7 +178,7 @@ export async function changePassword(email: string, oldPassword: string, newPass
         }
          
    // Haszowanie nowego hasła
-   const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+   const hashedNewPassword = await bcryptjs.hash(newPassword, 10);
 
  
      // Aktualizacja hasła w bazie
