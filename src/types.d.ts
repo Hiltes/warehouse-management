@@ -2,7 +2,7 @@
 declare namespace App {
     // Rozszerzenie typu Locals o 'user'
     interface Locals {
-        user: { username: string; password: string; email: string } | null;
-        client: { username:string; password: string; email: string } | null;
+        user: { username: string; password: string; email: string,role:string } | null;
+        client: { username:string; password: string; email: string,role:string } | null;
     }
 }

@@ -58,6 +58,23 @@ export async function getUserById(userId: string) {
     }
 }
 
+export async function getUserByEmail(email: string): Promise<IUser | null> {
+    try {
+        // Fetch the user document by email
+        const user = await User.findOne({ email }).exec();
+        if (user) {
+            console.log("User found:", user);
+            return user; // Zwróć obiekt użytkownika, jeśli został znaleziony
+        } else {
+            console.log("User not found");
+            return null; // Brak użytkownika
+        }
+    } catch (error) {
+        console.error('Error fetching user by email:', error);
+        throw new Error('Database query failed'); // Handle error appropriately
+    }
+}
+
 // Usunięcie użytkownika po ID
 export async function deleteUserById(userId: string) {
     try {
@@ -73,14 +90,38 @@ export async function deleteUserById(userId: string) {
     }
 }
 
+export async function deleteUserByEmail(email: string): Promise<boolean> {
+    try {
+        // Znajdź użytkownika na podstawie emaila
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.log("User not found for deletion");
+            return false; // Użytkownik nie został znaleziony
+        }
+
+        // Usunięcie użytkownika
+        await User.findByIdAndDelete(user._id);
+        console.log("User deleted successfully");
+        return true;
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return false;
+    }
+}
+
 // Sprawdzenie, czy użytkownik istnieje
 export async function checkUser(email: string, password: string): Promise<IUser | null> {
     try {
         const user = await User.findOne({ email });
         if (user) {
             console.log("User found:", user);
-            return user; // Zwracaj obiekt użytkownika
-            
+            const isMatch = await bcrypt.compare(password, String(user.password));
+            if (isMatch) {
+                return user; // Zwróć obiekt użytkownika, jeśli hasła się zgadzają
+            } else {
+                console.log("Invalid password");
+                return null; // Hasło nieprawidłowe
+            }
         } else {
             console.log("User not found");
             return null; // Brak użytkownika

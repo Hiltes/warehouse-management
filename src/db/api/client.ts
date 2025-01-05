@@ -58,6 +58,23 @@ export async function getClientById(userId: string) {
     }
 }
 
+export async function getClientByEmail(email: string): Promise<IClient | null> {
+    try {
+        // Fetch the user document by email
+        const client = await Client.findOne({ email }).exec();
+        if (client) {
+            console.log("Client found:", client);
+            return client; // Zwróć obiekt użytkownika, jeśli został znaleziony
+        } else {
+            console.log("Client not found");
+            return null; // Brak użytkownika
+        }
+    } catch (error) {
+        console.error('Error fetching user by email:', error);
+        throw new Error('Database query failed'); // Handle error appropriately
+    }
+}
+
 // Usunięcie użytkownika po ID
 export async function deleteClientById(clientId: string) {
     try {
@@ -73,6 +90,25 @@ export async function deleteClientById(clientId: string) {
     }
 }
 
+export async function deleteClientByEmail(email: string): Promise<boolean> {
+    try {
+        // Znajdź użytkownika na podstawie emaila
+        const user = await Client.findOne({ email });
+        if (!user) {
+            console.log("Client not found for deletion");
+            return false; // Użytkownik nie został znaleziony
+        }
+
+        // Usunięcie użytkownika
+        await Client.findByIdAndDelete(user._id);
+        console.log("Client deleted successfully");
+        return true;
+    } catch (error) {
+        console.error("Error deleting client:", error);
+        return false;
+    }
+}
+
 
 // Sprawdzenie, czy użytkownik istnieje
 export async function checkClient(email: string, password: string): Promise<IClient | null> {
@@ -80,7 +116,17 @@ export async function checkClient(email: string, password: string): Promise<ICli
         const client = await Client.findOne({ email });
         if (client) {
             console.log("Client found:", client);
-            return client; // Zwracaj obiekt użytkownika
+            console.log(client.password);
+            console.log(password);
+            const isMatch = await bcrypt.compare(password.trim(), client.password);
+                        if (isMatch) {
+                            return client; // Zwracaj obiekt użytkownika
+                        }else {
+                            console.log("Incorrect password");
+                            console.log("Password comparison result:", isMatch);
+                            return null; // Password is incorrect
+                        }
+
         } else {
             console.log("Client not found");
             return null; // Brak użytkownika
