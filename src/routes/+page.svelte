@@ -7,14 +7,14 @@
     onMount(async () => {
         try {
             // Sprawdzenie, czy użytkownik jest zalogowany
-            const response = await fetch('/api/auth', { method: 'GET' });
+            const response = await fetch('/auth/login', { method: 'GET' });
 
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
                 if (isLoggedIn) {
-                    // Przekierowanie zalogowanego użytkownika do strony X
-                    goto('/main/user_panel');
+                
+                    goto('/main/admin/admin_panel');
                 }
             } else {
                 isLoggedIn = false; // Traktuj jako niezalogowanego
@@ -28,8 +28,10 @@
 
 <!-- Wyświetlanie treści w zależności od stanu logowania -->
 {#if isLoggedIn === false}
+    <div>
     <h1>Welcome to Warehouse Management</h1>
-    <p>Please <a href="/api/auth">log in</a> to access the system.</p>
+    <p>Please <a href="/auth/login">log in</a> to access the system.</p>
+    </div>
 {:else if isLoggedIn === null}
     <p>Checking authentication status...</p>
 {/if}

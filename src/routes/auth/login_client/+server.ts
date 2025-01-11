@@ -1,17 +1,20 @@
 import { json } from '@sveltejs/kit';
-import jwt from 'jsonwebtoken';
-import { SECRET_JWT_KEY } from '$env/static/private';
-import { checkUser } from '$db/api/user';
+import jwt, {type JwtPayload} from 'jsonwebtoken';
+import { SECRET_JWT_KEY, TOKEN_EXPIRY_TIME } from '$env/static/private';
+import { checkUser } from '$db/api/user'; // Upewnij się, że ta funkcja sprawdza hasło z bcrypt
+
 
 export async function POST({ request }: { request: Request }) {
     try {
         const { email, password } = await request.json();
 
-        // Weryfikacja użytkownika (przyjmujemy, że masz funkcję checkUser)
-        const userExists = await checkUser(email, password);
+        // Sprawdzenie czy użytkownik istnieje
+        const userExists = await checkUser(email, password); // Funkcja powinna tylko sprawdzić, czy użytkownik istnieje w bazie danych
 
+        
+        // Jeśli użytkownik istnieje, porównaj hasło
         if (userExists) {
-            const token = jwt.sign({ email }, SECRET_JWT_KEY, { expiresIn: '1h' });
+            const token = jwt.sign({ id: userExists._id, email: userExists.email, role: userExists.role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
 
             const headers = new Headers();
             headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);
@@ -21,7 +24,10 @@ export async function POST({ request }: { request: Request }) {
                 { status: 200, headers }
             );
         } else {
+            const headers = new Headers();
+            headers.append('Set-Cookie', `token=0; HttpOnly; Path=/; Max-Age=0`);
             return json({ success: false, error: 'Invalid credentials' }, { status: 401 });
+            
         }
     } catch (error) {
         console.error('Error in login endpoint:', error);
@@ -38,7 +44,10 @@ export async function GET({ request }: { request: Request }) {
     }
 
     try {
-        const decoded = jwt.verify(token, SECRET_JWT_KEY);
+        const decoded = jwt.verify(token, SECRET_JWT_KEY) as JwtPayload;
+        if (decoded.role !== 'client') {
+            return json({ success: false, error: 'Unauthorized access' }, { status: 403 });
+        }
         return json({ success: true, user: decoded }, { status: 200 });
     } catch {
         return json({ success: false }, { status: 401 });

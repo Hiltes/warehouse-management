@@ -1,37 +1,35 @@
 <script lang="ts">
-    import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
+    let username = '';
     let email = '';
     let password = '';
     let message = '';
     let isLoggedIn = false;
-    let userEmail = '';
 
     // Funkcja logowania
-    async function handleLogin(event: Event) {
+    async function handReg(event: Event) {
         event.preventDefault();
 
+        const role = 'admin'; // rola admina
+
         try {
-            const response = await fetch('/api/auth', {
+            const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({username, email: email.toLowerCase(), password,role }),
                 credentials: 'same-origin'
             });
 
             const data = await response.json();
             if (data.success) {
-                message = 'Login successful!';
-                await checkLoginStatus();
-
-                // Przekierowanie do user panelu po zalogowaniu
-                goto('/main/user_panel');
+                message = 'Utworzono konto, możesz się zalogować!';
+                isLoggedIn = true;
             } else {
-                message = 'Invalid credentials.';
+                message = 'Nie udało się utworzyć konta, konto z tymi danymi już istnieje!';
             }
         } catch (error) {
-            console.error('Error during login:', error);
+            console.error('Error during register:', error);
             message = 'An error occurred. Please try again later.';
         }
     }
@@ -39,7 +37,7 @@
     // Funkcja sprawdzająca stan zalogowania
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/api/auth', {
+            const response = await fetch('/auth/login', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -47,7 +45,7 @@
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
-                userEmail = data.user?.email || '';
+                username = data.user?.username || '';
             } else {
                 isLoggedIn = false;
             }
@@ -57,27 +55,32 @@
         }
     }
 
-    // Sprawdzenie stanu logowania przy załadowaniu strony
-    onMount(() => {
-        checkLoginStatus();
-    });
 </script>
 
 {#if isLoggedIn}
-    <h2>Welcome, {userEmail}!</h2>
-    <p>{message}</p>
-    <p>You are already logged in. Redirecting to your dashboard...</p>
+    <div>
+    <h2>Hi, {username}!</h2>
+
+    <p>You are already registered in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
+    </div>
 {:else}
-    <form on:submit={handleLogin}>
+    <div>
+    <form on:submit={handReg}>
         <label>
-            Email:
+            Admin Username:
+            <input type="username" bind:value={username} required />
+        </label>
+        <label>
+            Admin Email:
             <input type="email" bind:value={email} required />
         </label>
         <label>
-            Password:
+            Admin Password:
             <input type="password" bind:value={password} required />
         </label>
-        <button type="submit">Login</button>
+        <button class="default" type="submit">Register</button>
+        <p class="wrongmessage">{message}</p>
+        <p>Click <a href="/auth/login">ESCAPE!</a> if you want to.</p>
     </form>
-    <p>{message}</p>
+    </div>
 {/if}

@@ -1,0 +1,143 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Ustawienia ogólne */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #a9a9a9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidenav {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav button {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    width: 90%;
+    font-size: 25px;
+    color: #a9a9a9;
+    display: block;
+    transition: 0.3s;
+    margin-left: 5%;
+}
+
+.sidenav button:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+/* Główny kontener */
+.main {
+    margin-left: 250px;  /* Kontener główny ma margines po lewej stronie dla sidebar */
+    padding: 2rem;
+    flex: 1;
+    width: 100%;
+}
+
+.search-form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+}
+
+.search-form input {
+    width: calc(100% - 20px); /* Pełna szerokość z marginesem */
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+}
+
+.search-form button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Wyniki wyszukiwania */
+.items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+.item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #007BFF;
+}
+
+.item p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.item strong {
+    font-weight: bold;
+}
+
+/* Responsywność */
+@media screen and (max-width: 1024px) {
+    .items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .items {
+        grid-template-columns: 1fr;
+    }
+}
