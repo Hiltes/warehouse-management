@@ -14,7 +14,7 @@
                 isLoggedIn = data.success;
                 if (isLoggedIn) {
                 
-                    goto('/main/admin_panel');
+                    goto('/main/admin/admin_panel');
                 }
             } else {
                 isLoggedIn = false; // Traktuj jako niezalogowanego

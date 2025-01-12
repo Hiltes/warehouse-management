@@ -66,7 +66,7 @@ async function handReg(event: Event) {
 {#if isLoggedIn}
     <div>
     <h2>Hi, {username}!</h2>
-    <p>You are already registered in. Click <a href="/main/client_panel">redirect</a>.</p>
+    <p>You are already registered in. Click <a href="/main/client/client_panel">redirect</a>.</p>
     </div>
 	{:else}
     <div>
@@ -83,7 +83,7 @@ async function handReg(event: Event) {
             Client Password:
             <input type="password" bind:value={password} required />
         </label>
-        <button type="submit">Register</button>
+        <button class="default" type="submit">Register</button>
     </form>
     <p>{message}</p>
     </div>

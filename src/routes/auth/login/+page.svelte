@@ -30,7 +30,7 @@
 
                 // Przekierowanie do user panelu po zalogowaniu
                 if(userRole==='admin'){
-                goto('/main/admin_panel');
+                goto('/main/admin/admin_panel');
             } else {
                 message = 'Invalid user role';
             }
@@ -79,7 +79,7 @@
     <div>
         <h2>Welcome, {username}!</h2>
         <p>{message}</p>
-        <p>You are already logged in. Click <a href="/main/admin_panel">redirect</a>.</p>
+        <p>You are already logged in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
     </div>
 {:else if isLoggedIn && userRole !== 'admin'}
 <div>

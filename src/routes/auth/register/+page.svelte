@@ -65,7 +65,8 @@ onMount(() => {
 {#if isLoggedIn}
     <div>
     <h2>Hi, {username}!</h2>
-    <p>You are already registered in. Click <a href="/main/admin_panel">redirect</a>.</p>
+
+    <p>You are already registered in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
     </div>
 {:else}
     <div>
@@ -82,8 +83,9 @@ onMount(() => {
             Admin Password:
             <input type="password" bind:value={password} required />
         </label>
-        <button type="submit">Register</button>
+        <button class="default" type="submit">Register</button>
+        <p class="wrongmessage">{message}</p>
+        <p>Click <a href="/auth/login">ESCAPE!</a> if you want to.</p>
     </form>
-    <p>{message}</p>
     </div>
 {/if}

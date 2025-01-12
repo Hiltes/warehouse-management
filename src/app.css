@@ -2,17 +2,23 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-
 /* Ustawienia ogólne */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #a9a9a9;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+}
+
+/* Main content */
+.main {
+    margin-left: 250px;
+    margin-bottom: auto;
+    margin-top: 110px
 }
 
 /* Formularz logowania */
@@ -24,9 +30,9 @@ form {
     width: 100%;
     max-width: 400px;
     box-sizing: border-box;
+    display: block;
 }
 
-/* Nagłówek */
 form h1 {
     margin-bottom: 1rem;
     font-size: 1.5rem;
@@ -34,51 +40,51 @@ form h1 {
     color: #333;
 }
 
-/* Etykiety i pola formularza */
 label {
     display: block;
     margin-bottom: 0.5rem;
     color: #555;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: bold;
 }
 
 input {
     width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1.5rem;
+    padding: 0.6rem;
+    margin-bottom: 0.3rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 1.2rem;
     box-sizing: border-box;
 }
 
 input:focus {
     border-color: #007BFF;
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 5px rgba(255, 0, 85, 0.5);
 }
 
-/* Przyciski */
-button {
+.default {
     width: 100%;
     padding: 0.8rem;
     background-color: #007BFF;
-    color: #fff;
+    color: white;
     border: none;
     border-radius: 4px;
     font-size: 1rem;
-    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-bottom: 10px;
 }
 
 button:hover {
     background-color: #0056b3;
 }
 
-/* Wiadomość */
+.wrongmessage {
+    margin: 0.6rem;
+    color: rgb(169, 0, 0);
+}
+
 p {
     text-align: center;
     font-size: 0.9rem;
@@ -86,18 +92,15 @@ p {
     color: #333;
 }
 
-
 a {
-    color:blue;
-    text-decoration:underline;
+    color: blue;
+    text-decoration: underline;
 }
 
-
-/* Lista przedmiotów */
-/* Kontener strony magazynu */
+/* Warehouse styles */
 .warehouse {
     padding: 2rem;
-    background-color: #f4f4f9;
+    background-color: #a9a9a9;
     max-width: 1200px;
     margin: auto;
     text-align: center;
@@ -109,7 +112,6 @@ a {
     margin-bottom: 2rem;
 }
 
-/* Przyciski nawigacyjne */
 .warehouse button {
     padding: 0.5rem 1rem;
     background-color: #007BFF;
@@ -125,7 +127,6 @@ a {
     background-color: #0056b3;
 }
 
-/* Elementy przedmiotów */
 .items {
     display: flex;
     flex-wrap: wrap;
@@ -139,10 +140,9 @@ a {
     padding: 1rem;
     background-color: #fff;
     width: 300px;
-    text-align: left;
+    text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-    text-align: center;
 }
 
 .item:hover {
@@ -160,3 +160,97 @@ a {
     color: #555;
 }
 
+/* Centered elements */
+.centered {
+    text-align: center;
+    align-items: center;
+}
+
+.search-form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+    text-align: center;
+    align-items: center;
+}
+
+.search-form input {
+    width: calc(100% - 20px); /* Pełna szerokość z marginesem */
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+}
+
+/* Sidebar */
+.sidenav {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Domyślnie schowany */
+    background-color: #111;
+    overflow-x: hidden;
+    transition: left 0.3s ease;
+    padding-top: 20px;
+}
+
+.sidenav.open {
+    left: 0; /* Kiedy otwarte, przesuwa na lewo */
+}
+
+.sidenav button {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    width: 90%;
+    font-size: 25px;
+    color: #a9a9a9;
+    display: block;
+    transition: 0.3s;
+    margin-left: 5%;
+}
+
+.sidenav button:hover {
+    color: #f1f1f1;
+}
+
+/* Toggle button */
+
+.toggle-button:hover {
+    background-color: #0056b3;
+}
+
+
+.header {
+    height: 100px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0; /* Domyślnie schowany */
+    background-color: #111;
+    overflow-x: hidden;
+    transition: left 0.3s ease;
+    padding-top: 20px;
+}
+
+
+.header button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1000;
+}
+.header.open button {
+    margin-left: 250px; /* Kiedy otwarte, przesuwa na lewo */
+}
