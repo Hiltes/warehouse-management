@@ -103,6 +103,8 @@
         <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
         <button on:click={() => goto('/main/client/delete_client')}>Usunięcie konta</button>
         <button on:click={() => goto('/main/client/password_client')}>Zmiana hasła</button>
+        <button on:click={() => goto('/main/client/cart_client')}>Koszyk</button>
+
         <button on:click={logout}>Wyloguj</button>
     </div>
     <form on:submit={handleChangePassword}>

@@ -1,13 +1,17 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
+// Interfejs reprezentujący obiekt Item w TypeScript
 export interface IItem extends Document {
-  warehouse_id: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
+  warehouse_id: mongoose.Types.ObjectId | string; // ObjectId lub string
   item_name: string;
   quantity: number;
   arrival_date: Date;
-  added_by: mongoose.Types.ObjectId;
+  added_by: mongoose.Types.ObjectId | string; // ObjectId lub string
+  
 }
 
+// Schemat Mongoose
 const productSchema = new Schema<IItem>({
   warehouse_id: { type: Schema.Types.ObjectId, ref: 'Warehouse', required: true },
   item_name: { type: String, required: true },
@@ -16,5 +20,7 @@ const productSchema = new Schema<IItem>({
   added_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-const Item = mongoose.models.Item || mongoose.model<IItem>('Item', productSchema);
+// Eksportowanie modelu Mongoose
+const Item: Model<IItem> = mongoose.models.Item || mongoose.model<IItem>('Item', productSchema);
+
 export default Item;
