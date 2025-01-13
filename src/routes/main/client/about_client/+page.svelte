@@ -2,34 +2,16 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
     import type { IWarehouse } from '$db/models/warehouse';
+    import type { IClient } from '$db/models/client';
+    
 
 
-    let itemName = '';
-    let quantity = 0;
-    let arrivalDate = '';
-    let warehouseId = '';
+    let isSidebarOpen = false;
     let warehouse: IWarehouse[] = [];
     let isLoggedIn: boolean | null = null;
+    let clientData: IClient;
 
-
-    async function addItem() {
-            const response = await fetch('/main/admin/addItem', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    item_name: itemName,
-                    quantity,
-                    arrival_date: arrivalDate,
-                    warehouse_id: warehouseId
-                })
-            });
-
-            if (response.ok) {
-                alert('Item added successfully!');
-            } else {
-                alert('Error adding item');
-            }
-        }
+   
         
         async function fetchWarehouse() {
             try{
@@ -46,26 +28,30 @@
             }
         }
 
-    onMount(async () => {		
+        async function checkLoginStatus() {
         try {
-			const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
-
-			if (response.ok) {
-				const data = await response.json();
-				isLoggedIn = data.success;
-			} else {
-				isLoggedIn = false;
-				goto('/auth/login_client');
-			}
-
-		} catch (error) {
-			console.error('Error checking login status:', error);
-			isLoggedIn = false;
-		}
-
-        fetchWarehouse();
+            const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Login response data:', data)
+                isLoggedIn = data.success;
+                if (isLoggedIn) {
+                    clientData = data.client; // Assuming your JWT returns user data directly
+                    console.log(`User data fetched:`, clientData);
+                }
+            } else {
+                isLoggedIn = false;
+                goto('/auth/login_client');
+            }
+        } catch (error) {
+            console.error('Error checking login status:', error);
+            isLoggedIn = false;
+        }
+    }
+    onMount(async () => {		
+        await checkLoginStatus();
+        await fetchWarehouse();
     });
-
 
     async function logout() {
 		try {
@@ -83,7 +69,45 @@
 		}
 	}
 
-    let isSidebarOpen = false;
+  // Funkcja do pobrania danych klienta
+async function getClientById(userId: string) {
+    try {
+        console.log(`Fetching client by ID: ${userId}`);
+        const response = await fetch(`/db/api/client?id=${userId}`); // Użyj nowego endpointu
+        if (response.ok) {
+            const client = await response.json();
+            console.log('Client data fetched:', client);
+            clientData = client;
+        } else {
+            console.error('Error fetching client data', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+        onMount(async () => {
+        try {
+            const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
+            if (response.ok) {
+                const data = await response.json();
+                isLoggedIn = data.success;
+
+                if (isLoggedIn && data.userId) { // Użyj userId z odpowiedzi
+                    await getClientById(data.userId); // Pobierz dane klienta
+                    console.log(`User ID fetched: ${data.userId}`);
+                }
+            } else {
+                isLoggedIn = false;
+                goto('/auth/login_client');
+            }
+        } catch (error) {
+            console.error('Error checking login status:', error);
+            isLoggedIn = false;
+        }
+
+        fetchWarehouse();
+    });
     function toggleSidebar() {
         isSidebarOpen = !isSidebarOpen;
     }
@@ -100,35 +124,24 @@
     <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
         <button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
         <button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
-        <button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
         <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+        <button on:click={() => goto('/main/client/delete_client')}>Usunięcie konta</button>
+		<button on:click={() => goto('/main/client/password_client')}>Zmiana hasła</button>
+        <button on:click={() => goto('/main/client/cart_client')}>Koszyk</button>
+
         <button on:click={logout}>Wyloguj</button>
     </div>
 
-    <form on:submit|preventDefault={addItem}>
-        <h1>Dodaj Produkt do Magazynu</h1>
-        <label for="name">Nazwa Przedmiotu:</label>
-        <input id="name" bind:value={itemName} type="text" required />
-     
-        <label for="quantity">Ilość:</label>
-        <input id="quantity" bind:value={quantity} type="number" required />
-     
-        <label for="date">Data Przyjęcia:</label>
-        <input id="date" bind:value={arrivalDate} type="date" required />
-     
-        <label for="warehouse">Magazyn:</label>
-        <select id="warehouse" bind:value={warehouseId} required>
-            <option value=""  selected>Wybierz magazyn</option>
-            {#each warehouse as w}
-                <option value={w._id}>{w.warehouse_type}</option>
-            {/each}
-        </select>
-     
-        <button type="submit" class="default" style="margin-top: 30px;">Dodaj Przedmiot</button>
-     
-     </form>
-{:else if isLoggedIn === null}
-	<p>Checking authentication status...</p>
-{:else}
-	<p>You are not logged in. Redirecting...</p>
-{/if}
+    {#if clientData}
+    <form>
+    <div>
+        <h1>Dane Klienta:</h1>
+        <p>Username: {clientData.username}</p>
+        <p>Email: {clientData?.email}</p>
+        <p>Role: {clientData?.role}</p>
+    </div>
+</form>
+        {:else}
+        <p>Nie znaleziono danych klienta.</p>
+    {/if}
+    {/if}

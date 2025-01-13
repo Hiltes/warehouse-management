@@ -1,6 +1,7 @@
 import User from '$db/models/user'; // Zakładamy, że model User jest w pliku models/User
 import type { IUser } from '$db/models/user';
-import bcrypt from 'bcrypt';
+import { json } from '@sveltejs/kit';
+import bcryptjs from 'bcryptjs';
 
 // Dodanie nowego użytkownika
 export async function addUser(username: string, email: string, password: string, role: string): Promise<boolean> {
@@ -14,14 +15,15 @@ export async function addUser(username: string, email: string, password: string,
         }
 
         // Tworzenie nowego użytkownika
-        
-        const hashedPassword = await bcrypt.hash(password, 10); // Haszowanie hasła
+        const user = new User({ username, email, password,role });
+         // Haszowanie hasła
         const newUser = new User({
             username,
             email,
-            password: hashedPassword,
+            password,
             role
         });
+        user.password=bcryptjs.hashSync(password,10);
 
         
         // Zapisanie nowego użytkownika w bazie
@@ -46,13 +48,65 @@ export async function getUsers() {
     }
 }
 
+export async function getUserById(userId: string) {
+    try {
+        // Fetch the user document by user ID
+        const user = await User.findById(userId).exec();
+        return user; // Mongoose will return null if not found
+    } catch (error) {
+        console.error('Error fetching user by ID:', error);
+        throw new Error('Database query failed'); // Handle error appropriately
+    }
+}
+
+export async function getUserByEmail(email: string): Promise<IUser | null> {
+    try {
+        // Fetch the user document by email
+        const user = await User.findOne({ email }).exec();
+        if (user) {
+            console.log("User found:", user);
+            return user; // Zwróć obiekt użytkownika, jeśli został znaleziony
+        } else {
+            console.log("User not found");
+            return null; // Brak użytkownika
+        }
+    } catch (error) {
+        console.error('Error fetching user by email:', error);
+        throw new Error('Database query failed'); // Handle error appropriately
+    }
+}
+
 // Usunięcie użytkownika po ID
 export async function deleteUserById(userId: string) {
     try {
-        await User.findByIdAndDelete(userId); // Usuwanie użytkownika po ID
-        console.log("User deleted successfully");
+        const result = await User.findByIdAndDelete(userId); // Usuwanie użytkownika po ID
+        if (!result) {
+            console.log("Client not found for deletion");
+            return false;
+        }
+        console.log("Client deleted successfully");
+        return true;
     } catch (error) {
         console.error("Error deleting user:", error);
+    }
+}
+
+export async function deleteUserByEmail(email: string): Promise<boolean> {
+    try {
+        // Znajdź użytkownika na podstawie emaila
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.log("User not found for deletion");
+            return false; // Użytkownik nie został znaleziony
+        }
+
+        // Usunięcie użytkownika
+        await User.findByIdAndDelete(user._id);
+        console.log("User deleted successfully");
+        return true;
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return false;
     }
 }
 
@@ -62,7 +116,13 @@ export async function checkUser(email: string, password: string): Promise<IUser 
         const user = await User.findOne({ email });
         if (user) {
             console.log("User found:", user);
-            return user; // Zwracaj obiekt użytkownika
+            const isMatch = await bcryptjs.compare(password.trim(), user.password.trim());
+            if (isMatch) {
+                return user; // Zwróć obiekt użytkownika, jeśli hasła się zgadzają
+            } else {
+                console.log("Invalid password");
+                return null; // Hasło nieprawidłowe
+            }
         } else {
             console.log("User not found");
             return null; // Brak użytkownika
@@ -104,21 +164,23 @@ export async function changePassword(email: string, oldPassword: string, newPass
         }
 
            //Pokaż dane użytkownika
-           console.log("User found:", { username: user.username, email: user.email });
-         
+           console.log("User found:", { username: user.username, email: user.email, role: user.role });
 
-        // Sprawdzenie starego hasła
-        const isMatch = await bcrypt.compare(oldPassword.trim(), user.password);
-        console.log("Comparing:", oldPassword, user.password, "Match:", isMatch);
+           
+        // Check if the current password is correct
+        const hashPass = /^\$2y\$/.test(user.password) ? '$2a$' + user.password.slice(4) : user.password;
+        const isMatch = await bcryptjs.compare(oldPassword, hashPass);
         if (!isMatch) {
-            console.log("Old password is incorrect");
-            return false; // Stare hasło jest niepoprawneA
+            console.log("Incorrect email or current password");
+            return false; // Current password is incorrect
         }
+         
+   // Haszowanie nowego hasła
+   const hashedNewPassword = await bcryptjs.hash(newPassword, 10);
 
-
-        // Haszowanie nowego hasła
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedNewPassword;
+ 
+     // Aktualizacja hasła w bazie
+     user.password = hashedNewPassword;
 
         // Zapisz zmiany
         await user.save();
@@ -127,5 +189,24 @@ export async function changePassword(email: string, oldPassword: string, newPass
     } catch (error) {
         console.error("Error changing password:", error);
         return false;
+    }
+}
+
+export async function deleteUser(email:string,username:string){
+    try {
+
+        // Find the client
+        const user = await User.findOne({ email, username });
+
+        if (!user) {
+            console.log('Client not found');
+        }
+
+        // Delete the client
+        await User.findByIdAndDelete(user._id);
+
+        console.log('Client deleted succesfully');
+    } catch (error) {
+        console.log('Error deleting client');
     }
 }

@@ -13,11 +13,13 @@
     async function handleLogin(event: Event) {
         event.preventDefault();
 
+        const role = 'client';
+
         try {
             const response = await fetch('/auth/login_client', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ username,email, password,role }),
                 credentials: 'same-origin'
             });
 
@@ -52,8 +54,8 @@
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
-                username = data.user?.email || ''; // Upewnij się, że user i username istnieją
-                userRole = data.user?.role || ''; // Upewnij się, że rola użytkownika istnieje
+                email = data.client?.email || ''; // Upewnij się, że user i username istnieją
+                userRole = data.client?.role || ''; // Upewnij się, że rola użytkownika istnieje
             } else {
                 isLoggedIn = false;
                 username = ''; // Wyczyszczenie nazwy użytkownika, jeśli sesja wygasła
@@ -71,6 +73,7 @@
     onMount(() => {
         checkLoginStatus();
     });
+    console.log(username,email);
 </script>
 
 {#if isLoggedIn && userRole === 'client'}
@@ -95,12 +98,14 @@
                 Client Password:
                 <input type="password" bind:value={password} required />
             </label>
-            <button class="default" type="submit">Login</button>
-            <div class="centered">
-            <a href='/auth/register_client'>Register</a><br>
-            <a href='/auth/login'>Switch to admin panel</a><br>
+            <button type="submit">Login</button>
+            <a href='/auth/register_client'>Register</a>
+            <br>
+            <a href='/auth/login'>Switch to admin panel</a>
+            <br>
             <a href='/auth/password_client'>Change password</a>
-            </div>
+            <br>
+            <a href='/auth/delete_client'>Delete account</a>
         </form>
 
         <p>{message}</p>

@@ -13,11 +13,13 @@
     async function handleLogin(event: Event) {
         event.preventDefault();
 
+        const role = 'admin';
+        
         try {
             const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ username,email, password,role }),
                 credentials: 'same-origin'
             });
 
@@ -95,12 +97,14 @@
                Admin Password:
                 <input type="password" bind:value={password} required />
             </label>
-            <button class="default" type="submit">Login</button>
-            <div class="centered">
-            <a href='/auth/register'>Register</a> <br>
-            <a href='/auth/login_client'>Switch to client panel</a><br>
+            <button type="submit">Login</button>
+            <a href='/auth/register'>Register</a>
+            <br>
+            <a href='/auth/login_client'>Switch to client panel</a>
+            <br>
             <a href='/auth/password_admin'>Change password</a>
-            </div>
+            <br>
+            <a href='/auth/delete_admin'>Delete account</a>
         </form>
 
         <p>{message}</p>

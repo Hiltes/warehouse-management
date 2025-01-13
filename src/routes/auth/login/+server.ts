@@ -23,7 +23,7 @@ export async function POST({ request }: { request: Request }) {
             );
 
             const headers = new Headers();
-            headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600; Secure`);
+            headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=0`);
 
             return new Response(
                 JSON.stringify({ success: true, message: 'Login successful' }),

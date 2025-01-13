@@ -12,9 +12,9 @@ export interface IUser extends Document {
 // Schemat użytkownika
 const userSchema = new Schema<IUser>({
     username: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, maxlength: 60 },
     email: { type: String, required: true, unique: true },
-    role: { type: String, enum: ['admin', 'client']}
+    role: { type: String, enum: ['admin']}
 },
 {
     versionKey: false

@@ -55,6 +55,11 @@
         }
     }
 
+// Sprawdzenie stanu logowania przy załadowaniu strony
+onMount(() => {
+        checkLoginStatus();
+    });
+    
 </script>
 
 {#if isLoggedIn}
