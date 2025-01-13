@@ -105,6 +105,7 @@
         <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
 		<button on:click={() => goto('/main/admin/delete_admin')}>Usunięcie konta</button>
 		<button on:click={() => goto('/main/admin/password_admin')}>Zmiana hasła</button>
+		<button on:click={() => goto('/main/admin/orders')}>Zamówienia</button>
         <button on:click={logout}>Wyloguj</button>
     </div>
 	
