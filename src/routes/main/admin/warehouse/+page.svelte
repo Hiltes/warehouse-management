@@ -126,7 +126,7 @@
 				<div class="item">
 					<h3>{item.item_name}</h3>
 					<p>Quantity: {item.quantity}</p>
-					<p>Arrival Date: {item.arrival_date}</p>
+					<p>Arrival Date: {new Date(item.arrival_date).toLocaleDateString()}</p>
 					<p>Added By: {item.added_by}</p>
 					<p>Warehouse ID: {item.warehouse_id}</p>
 				</div>
