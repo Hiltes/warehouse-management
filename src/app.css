@@ -14,9 +14,11 @@ body {
     min-height: 100vh;
 }
 
+
+    
 /* Main content */
 .main {
-    margin-left: 250px;
+
     margin-bottom: auto;
     margin-top: 110px
 }

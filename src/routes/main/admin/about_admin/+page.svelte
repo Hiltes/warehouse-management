@@ -2,13 +2,13 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
     import type { IWarehouse } from '$db/models/warehouse';
-    import { type IUser } from '$db/models/user';
+    import type { IUser } from '$db/models/user';
 
 
     let isSidebarOpen = false;
     let warehouse: IWarehouse[] = [];
     let isLoggedIn: boolean | null = null;
-    let userData: IUser | null = null;
+    let userData: IUser;
 
    
         
@@ -78,7 +78,8 @@ async function getUserById(userId: string) {
         console.log(`Fetching client by ID: ${userId}`);
         const response = await fetch(`/db/api/user?id=${userId}`); // Użyj nowego endpointu
         if (response.ok) {
-            userData = await response.json();
+            const user = await response.json();
+            userData = user;
         } else {
             console.error('Error fetching client data', response.statusText);
         }
@@ -128,6 +129,7 @@ async function getUserById(userId: string) {
         <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
         <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
         <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
+        <button on:click={() => goto('/main/admin/orders')}>Wyszukaj Zamówienie</button>
         <button on:click={() => goto('/main/admin/delete_admin')}>Usunięcie konta</button>
 		<button on:click={() => goto('/main/admin/password_admin')}>Zmiana hasła</button>
         <button on:click={logout}>Wyloguj</button>
@@ -135,12 +137,12 @@ async function getUserById(userId: string) {
 
    
     {#if userData}
-    <form>
+    <form on:submit={checkLoginStatus}>
         <div>
     <h1>Dane Klienta</h1>
-        <p>Username: {userData.username}<br></p>
-        <p>Email: {userData.email}<br></p>
-        <p>Role: {userData.role}</p>
+        <p>Username: {userData?.username}</p>
+        <p>Email: {userData?.email}</p>
+        <p>Role: {userData?.role}</p>
     </div>
     </form>
         {:else}

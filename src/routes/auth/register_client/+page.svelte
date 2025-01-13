@@ -84,7 +84,8 @@ async function handReg(event: Event) {
             <input type="password" bind:value={password} required />
         </label>
         <button class="default" type="submit">Register</button>
+        <p class="wrongmessage">{message}</p>
+        <p>Click <a href="/auth/login">ESCAPE!</a> if you want to.</p>
     </form>
-    <p>{message}</p>
     </div>
 {/if}
