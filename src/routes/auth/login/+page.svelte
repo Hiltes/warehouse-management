@@ -73,6 +73,7 @@
     onMount(() => {
         checkLoginStatus();
     });
+    console.log(username,email);
 </script>
 
 {#if isLoggedIn && userRole === 'admin'}

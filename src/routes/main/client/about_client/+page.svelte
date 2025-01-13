@@ -5,7 +5,6 @@
     import type { IClient } from '$db/models/client';
     
 
-
     let isSidebarOpen = false;
     let warehouse: IWarehouse[] = [];
     let isLoggedIn: boolean | null = null;

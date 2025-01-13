@@ -79,6 +79,7 @@ async function getUserById(userId: string) {
         const response = await fetch(`/db/api/user?id=${userId}`); // Użyj nowego endpointu
         if (response.ok) {
             const user = await response.json();
+            console.log('User data fetched:', user);
             userData = user;
         } else {
             console.error('Error fetching client data', response.statusText);
@@ -101,7 +102,7 @@ async function getUserById(userId: string) {
                 }
             } else {
                 isLoggedIn = false;
-                goto('/auth/login_client');
+                goto('/auth/login');
             }
         } catch (error) {
             console.error('Error checking login status:', error);
@@ -139,9 +140,9 @@ async function getUserById(userId: string) {
     <form on:submit={checkLoginStatus}>
         <div>
     <h1>Dane Klienta</h1>
-        <p>Username: {userData?.username}</p>
-        <p>Email: {userData?.email}</p>
-        <p>Role: {userData?.role}</p>
+        <p>Username: {userData.username}</p>
+        <p>Email: {userData.email}</p>
+        <p>Role: {userData.role}</p>
     </div>
     </form>
         {:else}

@@ -199,14 +199,15 @@ export async function deleteUser(email:string,username:string){
         const user = await User.findOne({ email, username });
 
         if (!user) {
-            console.log('Client not found');
+            return json({ success: false, error: 'User not found' }, { status: 404 });
         }
 
         // Delete the client
         await User.findByIdAndDelete(user._id);
 
-        console.log('Client deleted succesfully');
+        return json({ success: true, message: 'User deleted successfully' }, { status: 200 });
     } catch (error) {
         console.log('Error deleting client');
+        return json({ success: false, error: 'Internal server error' }, { status: 500 });
     }
 }
