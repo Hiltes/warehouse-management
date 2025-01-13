@@ -1,10 +1,7 @@
 import { json } from '@sveltejs/kit';
-
-import jwt from 'jsonwebtoken';
+import jwt, {type JwtPayload} from 'jsonwebtoken';
 import { SECRET_JWT_KEY, TOKEN_EXPIRY_TIME } from '$env/static/private';
 import { checkUser } from '$db/api/user';
-import bcrypt from 'bcrypt';
-import {type JwtPayload} from 'jsonwebtoken';
 
 
 export async function POST({ request }: { request: Request }) {
@@ -17,7 +14,7 @@ export async function POST({ request }: { request: Request }) {
 
         if (userExists) {
             const token = jwt.sign(
-                { id: userExists._id, email: userExists.email, role: userExists.role },
+                { id: userExists._id, username: userExists.username, email: userExists.email, role: userExists.role },
                 SECRET_JWT_KEY,
                 { expiresIn: TOKEN_EXPIRY_TIME }
             );
