@@ -2,13 +2,13 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
     import type { IWarehouse } from '$db/models/warehouse';
-    import { type IUser } from '$db/models/user';
+    import type { IUser } from '$db/models/user';
 
 
     let isSidebarOpen = false;
     let warehouse: IWarehouse[] = [];
     let isLoggedIn: boolean | null = null;
-    let userData: IUser | null = null;
+    let userData: IUser;
 
    
         
@@ -78,7 +78,8 @@ async function getUserById(userId: string) {
         console.log(`Fetching client by ID: ${userId}`);
         const response = await fetch(`/db/api/user?id=${userId}`); // Użyj nowego endpointu
         if (response.ok) {
-            userData = await response.json();
+            const user = await response.json();
+            userData = user;
         } else {
             console.error('Error fetching client data', response.statusText);
         }
@@ -138,8 +139,8 @@ async function getUserById(userId: string) {
     <form on:submit={checkLoginStatus}>
         <div>
     <h1>Dane Klienta</h1>
-        <p>Username: {userData.username}<br></p>
-        <p>Email: {userData.email}<br></p>
+        <p>Username: {userData.username}</p>
+        <p>Email: {userData.email}</p>
         <p>Role: {userData.role}</p>
     </div>
     </form>
