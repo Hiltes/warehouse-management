@@ -14,7 +14,7 @@ export async function POST({ request }: { request: Request }) {
         
         // Jeśli użytkownik istnieje, porównaj hasło
         if (clientExists) {
-            const token = jwt.sign({ id: clientExists._id, email: clientExists.email, role: clientExists.role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
+            const token = jwt.sign({ id: clientExists._id, username: clientExists.username, email: clientExists.email, role: clientExists.role }, SECRET_JWT_KEY, { expiresIn: TOKEN_EXPIRY_TIME });
 
             const headers = new Headers();
             headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);

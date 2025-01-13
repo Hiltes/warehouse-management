@@ -1,18 +1,18 @@
 import { json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import { SECRET_JWT_KEY, TOKEN_EXPIRY_TIME } from '$env/static/private';
-import { checkClient } from '$db/api/client'; // Upewnij się, że masz funkcję, która sprawdza użytkownika
+import { checkUser } from '$db/api/user'; // Upewnij się, że masz funkcję, która sprawdza użytkownika
 
 export async function POST({ request }: { request: Request }) {
     try {
         const { email, password } = await request.json();
 
         // Sprawdzenie, czy użytkownik istnieje i czy hasło jest poprawne
-        const client = await checkClient(email, password);
+        const user = await checkUser(email, password);
 
-        if (client) {
+        if (user) {
             const token = jwt.sign(
-                { id: client._id, email: client.email, role: client.role },
+                { id: user._id, email: user.email, role: user.role },
                 SECRET_JWT_KEY,
                 { expiresIn: TOKEN_EXPIRY_TIME }
             );

@@ -54,7 +54,7 @@
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
-                username = data.client?.email || ''; // Upewnij się, że user i username istnieją
+                email = data.client?.email || ''; // Upewnij się, że user i username istnieją
                 userRole = data.client?.role || ''; // Upewnij się, że rola użytkownika istnieje
             } else {
                 isLoggedIn = false;

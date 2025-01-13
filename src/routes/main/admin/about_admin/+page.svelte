@@ -133,11 +133,16 @@ async function getUserById(userId: string) {
         <button on:click={logout}>Wyloguj</button>
     </div>
 
-    <h1>Dane Klienta</h1>
+   
     {#if userData}
+    <form>
+        <div>
+    <h1>Dane Klienta</h1>
         <p>Username: {userData.username}<br></p>
         <p>Email: {userData.email}<br></p>
         <p>Role: {userData.role}</p>
+    </div>
+    </form>
         {:else}
         <p>Nie znaleziono danych klienta.</p>
     {/if}

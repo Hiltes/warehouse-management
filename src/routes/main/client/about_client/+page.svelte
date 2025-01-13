@@ -2,13 +2,14 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
     import type { IWarehouse } from '$db/models/warehouse';
-    import { type IClient } from '$db/models/client';
+    import type { IClient } from '$db/models/client';
+    
 
 
     let isSidebarOpen = false;
     let warehouse: IWarehouse[] = [];
     let isLoggedIn: boolean | null = null;
-    let clientData: IClient | null = null;
+    let clientData: IClient;
 
    
         
@@ -32,6 +33,7 @@
             const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
             if (response.ok) {
                 const data = await response.json();
+                console.log('Login response data:', data)
                 isLoggedIn = data.success;
                 if (isLoggedIn) {
                     clientData = data.client; // Assuming your JWT returns user data directly
@@ -51,7 +53,6 @@
         await fetchWarehouse();
     });
 
-
     async function logout() {
 		try {
 			const response = await fetch('/main/client/client_panel', {
@@ -68,17 +69,15 @@
 		}
 	}
 
-
-  
-
-    
   // Funkcja do pobrania danych klienta
 async function getClientById(userId: string) {
     try {
         console.log(`Fetching client by ID: ${userId}`);
         const response = await fetch(`/db/api/client?id=${userId}`); // Użyj nowego endpointu
         if (response.ok) {
-            clientData = await response.json();
+            const client = await response.json();
+            console.log('Client data fetched:', client);
+            clientData = client;
         } else {
             console.error('Error fetching client data', response.statusText);
         }
@@ -131,11 +130,15 @@ async function getClientById(userId: string) {
         <button on:click={logout}>Wyloguj</button>
     </div>
 
-    <h1>Dane Klienta</h1>
     {#if clientData}
-        <p>Username:<br> {clientData.username}<br></p>
-        <p>Email:<br> {clientData.email}<br></p>
-        <p>Role:<br> {clientData.role}</p>
+    <form>
+    <div>
+        <h1>Dane Klienta:</h1>
+        <p>Username: {clientData.username}</p>
+        <p>Email: {clientData?.email}</p>
+        <p>Role: {clientData?.role}</p>
+    </div>
+</form>
         {:else}
         <p>Nie znaleziono danych klienta.</p>
     {/if}
