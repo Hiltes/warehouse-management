@@ -61,6 +61,7 @@
         <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
         <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
         <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
+        <button on:click={() => goto('/main/admin/orders')}>Zamówienia</button>
         <button on:click={logout}>Wyloguj</button>
     </div>
 

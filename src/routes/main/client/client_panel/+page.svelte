@@ -59,6 +59,8 @@
         <button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
         <button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
         <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+		<button on:click={() => goto('/main/client/cart_client')}>Koszyk</button>
+
         <button on:click={logout}>Wyloguj</button>
     </div>
 

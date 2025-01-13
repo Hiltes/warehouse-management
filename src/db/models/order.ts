@@ -1,28 +1,51 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import mongoose, { Schema, model, Document } from 'mongoose';
 
-interface IOrderProduct {
-  productId: Types.ObjectId;
-  quantity: number;
+// Interfejs dla dokumentu zamówienia
+export interface IOrder extends Document {
+	quantity: any;
+	name: any;
+    items: {
+        id: string;
+        name: string;
+        quantity: number;
+    }[];
+    total: number;
+    createdAt: Date;
 }
 
-interface IOrder extends Document {
-  userId: Types.ObjectId;
-  products: IOrderProduct[];
-  totalPrice: number;
-}
+// Definicja schematu zamówienia
+const orderSchema = new Schema<IOrder>(
+    {
+        items: [
+            {
+                id: { type: String, required: true }, // ID produktu
+                name: { type: String, required: true }, // Nazwa produktu
+                quantity: { type: Number, required: true, min: 1 }, // Ilość (minimum 1)
+            },
+        ],
+        total: {
+            type: Number,
+            required: true,
+            min: 0, // Suma nie może być ujemna
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now, // Automatyczne ustawienie daty utworzenia
+        },
+    },
+    {
+        timestamps: true, // Automatyczne dodanie pól `createdAt` i `updatedAt`
+    }
+);
 
-const orderProductSchema = new Schema<IOrderProduct>({
-  productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-  quantity: { type: Number, required: true }
-}, { _id: false }); // _id: false, by nie tworzyć osobnych _id dla elementów tablicy
-
-const orderSchema = new Schema<IOrder>({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  products: { type: [orderProductSchema], required: true },
-  totalPrice: { type: Number, required: true },
-}, {
-  timestamps: true, // automatycznie dodaje createdAt, updatedAt
+// Dodanie walidacji pre-save (opcjonalne)
+orderSchema.pre('save', function (next) {
+    if (this.items.length === 0) {
+        const err = new Error('Order must have at least one item.');
+        return next(err);
+    }
+    next();
 });
 
-const Order = mongoose.model<IOrder>('Order', orderSchema);
-export default Order;
+// Eksport modelu zamówienia
+export const Order = model<IOrder>('Order', orderSchema);
