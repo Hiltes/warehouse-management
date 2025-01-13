@@ -133,9 +133,9 @@ async function getClientById(userId: string) {
 
     <h1>Dane Klienta</h1>
     {#if clientData}
-        <p>Username: {clientData.username}</p>
-        <p>Email: {clientData.email}</p>
-        <p>Role: {clientData.role}</p>
+        <p>Username:<br> {clientData.username}<br></p>
+        <p>Email:<br> {clientData.email}<br></p>
+        <p>Role:<br> {clientData.role}</p>
         {:else}
         <p>Nie znaleziono danych klienta.</p>
     {/if}
