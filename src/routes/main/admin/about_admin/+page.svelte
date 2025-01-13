@@ -135,7 +135,7 @@ async function getUserById(userId: string) {
 
    
     {#if userData}
-    <form>
+    <form on:submit={checkLoginStatus}>
         <div>
     <h1>Dane Klienta</h1>
         <p>Username: {userData.username}<br></p>
