@@ -45,13 +45,16 @@ export async function getClients() {
     } catch (error) {
         console.error("Error retrieving clients:", error);
     }
+
 }
+
+
 
 export async function getClientById(userId: string) {
     try {
         // Fetch the user document by user ID
-        const user = await Client.findById(userId).exec();
-        return user; // Mongoose will return null if not found
+        const client = await Client.findById(userId).exec();
+        return client; // Mongoose will return null if not found
     } catch (error) {
         console.error('Error fetching user by ID:', error);
         throw new Error('Database query failed'); // Handle error appropriately
