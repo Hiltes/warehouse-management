@@ -17,7 +17,6 @@
     let isSidebarOpen = false; // Status menu bocznego
 
     // Funkcja pobierająca zamówienia z bazy danych
-    
     async function fetchOrders() {
         try {
             const response = await fetch('/main/admin/orders', {
@@ -60,8 +59,10 @@
             filteredOrders = [...orders]; // Pokaż wszystkie zamówienia, jeśli pole jest puste
         } else {
             const query = searchQuery.toLowerCase();
+
+            // Filtrowanie zamówień na podstawie ID zamówienia
             filteredOrders = orders.filter(order =>
-                order.name.toLowerCase().includes(query)
+                order.id.toLowerCase().includes(query)
             );
         }
     }
@@ -116,21 +117,24 @@
 
 <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
     <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
+    <button on:click={() => goto('/main/admin/about_admin')}>O użytkowniku</button>
     <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
     <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
     <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
-    <button on:click={() => goto('/main/admin/orders')}>Zamówienia</button>
+    <button on:click={() => goto('/main/admin/orders')}>Wyszukaj Zamówienie</button>
+    <button on:click={() => goto('/main/admin/delete_admin')}>Usunięcie konta</button>
+    <button on:click={() => goto('/main/admin/password_admin')}>Zmiana hasła</button>
     <button on:click={logout}>Wyloguj</button>
 </div>
 
 <div class="main">
     <!-- Pole wyszukiwania -->
     <div class="search-bar">
-        <label for="search">Wyszukaj produkt:</label>
+        <label for="search">Wyszukaj zamówienie (ID):</label>
         <input
             type="text"
             id="search"
-            placeholder="Wprowadź nazwę produktu..."
+            placeholder="Wprowadź ID zamówienia..."
             bind:value={searchQuery}
             on:input={handleSearch}
         />
@@ -161,27 +165,25 @@
 {/if}
 
 <style>
-    
-
     .search-bar {
         background-color: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
-    margin-bottom: 2rem;
-    text-align: center;
-    align-items: center;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+        margin-bottom: 2rem;
+        text-align: center;
+        align-items: center;
     }
 
     .search-bar input {
         width: calc(100% - 20px); /* Pełna szerokość z marginesem */
-    padding: 0.6rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    font-size: 1.2rem;
-    box-sizing: border-box;
+        padding: 0.6rem;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+        font-size: 1.2rem;
+        box-sizing: border-box;
     }
 
     .orders {

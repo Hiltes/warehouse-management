@@ -93,18 +93,17 @@
 </button>
 </div>
 
-    <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
-        <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
-        <button on:click={() => goto('/main/admin/about_admin')}>O użytkowniku</button>
-        <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
-        <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
-        <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
-        <button on:click={() => goto('/main/admin/delete_admin')}>Usunięcie konta</button>
-		<button on:click={() => goto('/main/admin/password_admin')}>Zmiana hasła</button>
-        <button on:click={() => goto('/main/admin/orders')}>Zamówienia</button>
-        <button on:click={logout}>Wyloguj</button>
-
-    </div>
+<div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
+    <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
+    <button on:click={() => goto('/main/admin/about_admin')}>O użytkowniku</button>
+    <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
+    <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
+    <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
+    <button on:click={() => goto('/main/admin/orders')}>Wyszukaj Zamówienie</button>
+    <button on:click={() => goto('/main/admin/delete_admin')}>Usunięcie konta</button>
+    <button on:click={() => goto('/main/admin/password_admin')}>Zmiana hasła</button>
+    <button on:click={logout}>Wyloguj</button>
+</div>
     <div class="main">
         <!-- Search Form -->
         <div class="search-form" >
@@ -120,9 +119,9 @@
                     <div class="item">
                         <h3>{item.item_name}</h3>
                         <p>Quantity: {item.quantity}</p>
-                        <p>Arrival Date: {item.arrival_date}</p>
-                        <p>Added By: {item.added_by}</p>
-                        <p>Warehouse ID: {item.warehouse_id}</p>
+                        <p>Arrival Date: {new Date(item.arrival_date).toLocaleDateString()}</p>
+                        <p>Added By: {item.added_by_name || 'Unknown'}</p>
+				        <p>Warehouse Name: {item.warehouse_type || 'Unknown'}</p>
                     </div>
                 {/each}
             </div>

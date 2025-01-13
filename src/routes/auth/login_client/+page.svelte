@@ -98,14 +98,12 @@
                 Client Password:
                 <input type="password" bind:value={password} required />
             </label>
-            <button type="submit">Login</button>
+            <button class="default" type="submit">Login</button>
+            <div class= "centered">
             <a href='/auth/register_client'>Register</a>
             <br>
             <a href='/auth/login'>Switch to admin panel</a>
-            <br>
-            <a href='/auth/password_client'>Change password</a>
-            <br>
-            <a href='/auth/delete_client'>Delete account</a>
+            </div>
         </form>
 
         <p>{message}</p>
