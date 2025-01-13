@@ -8,6 +8,9 @@ export interface IItem extends Document {
   quantity: number;
   arrival_date: Date;
   added_by: mongoose.Types.ObjectId | string; // ObjectId lub string
+  added_by_name?: string;
+  warehouse_type?: string;
+
   
 }
 
