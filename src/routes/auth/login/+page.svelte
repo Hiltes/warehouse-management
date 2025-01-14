@@ -86,7 +86,7 @@
     </div>
 {:else if isLoggedIn && userRole !== 'admin'}
     <div>
-        <p>You are logged in as {username}, but you do not have permission to access the admin panel.</p>
+        <p>You are already logged in. Click <a href="/main/client/client_panel">redirect</a>.</p>
         <p>{message}</p>
     </div>
 {:else}

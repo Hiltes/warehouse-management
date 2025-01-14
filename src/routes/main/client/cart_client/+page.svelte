@@ -47,30 +47,31 @@
 
     // Funkcja do tworzenia zamówienia
     async function placeOrder() {
-        try {
-            const response = await fetch('/main/client/cart_client', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    items: $cart
-                })
-            });
+    try {
+        const response = await fetch('/main/client/cart_client', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ items: $cart }),
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (data.success) {
-                alert('Zamówienie zostało dodane!');
-                clearCart(); // Opcjonalnie wyczyszczenie koszyka
-            } else {
-                alert('Wystąpił błąd podczas dodawania zamówienia.');
-            }
-        } catch (error) {
-            console.error('Error placing order:', error);
-            alert('Wystąpił błąd podczas dodawania zamówienia.');
+        if (data.success) {
+            alert('Zamówienie zostało dodane!');
+            clearCart();
+        } else {
+            alert(`Błąd: ${data.error}`);
         }
+    } catch (error) {
+        console.error('Error placing order:', error);
+        alert('Wystąpił błąd podczas dodawania zamówienia.');
     }
+
+
+}
+
 </script>
 
 {#if isLoggedIn === true}
