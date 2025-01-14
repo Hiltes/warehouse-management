@@ -20,11 +20,7 @@ export async function POST({ request }: { request: Request }) {
             );
 
             const headers = new Headers();
-<<<<<<< HEAD
             headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);
-=======
-            headers.append('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=${TOKEN_EXPIRY_TIME}`);
->>>>>>> main
 
             // Respond with success and user details (including role)
             return new Response(
