@@ -2,15 +2,13 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { IItem } from '$db/models/item';
-	import type { IWarehouse } from '$db/models/warehouse'; // Zmień ścieżkę na właściwą
+	import type { IWarehouse } from '$db/models/warehouse';
 
 	let warehouse: IWarehouse[] = [];
-	
 	let isLoggedIn: boolean | null = null; 
 	let items: IItem[] = [];
 	let error = '';
-	
-   let selectedWarehouse = 'all';
+	let selectedWarehouse = 'all';
 
 	async function logout() {
 		try {
@@ -28,23 +26,19 @@
 		}
 	}
 
-
-	
-
 	async function fetchWarehouse() {
-            try{
-                const res = await fetch('/main/admin/addItem');
-            if (res.ok) {
-                warehouse = await res.json() as IWarehouse[];
-                console.log('Warehouse fetched:', warehouse); 
-            } else {
-                console.error('Error fetching warehouse' , res.statusText);
-
-            }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-   }
+		try {
+			const res = await fetch('/main/admin/addItem');
+			if (res.ok) {
+				warehouse = await res.json() as IWarehouse[];
+				console.log('Warehouse fetched:', warehouse); 
+			} else {
+				console.error('Error fetching warehouse', res.statusText);
+			}
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
 
 	async function fetchItems() {
 		try {
@@ -61,8 +55,8 @@
 		}
 	}
 
-	 onMount(async () => {		
-        try {
+	onMount(async () => {
+		try {
 			const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
 
 			if (response.ok) {
@@ -72,64 +66,65 @@
 				isLoggedIn = false;
 				goto('/auth/login');
 			}
-
 		} catch (error) {
 			console.error('Error checking login status:', error);
 			isLoggedIn = false;
 		}
 
-        fetchWarehouse();
-		  await fetchItems();
-    });
+		fetchWarehouse();
+		await fetchItems();
+	});
 
-	
 	let isSidebarOpen = false;
-    function toggleSidebar() {
-        isSidebarOpen = !isSidebarOpen;
-    }
+	function toggleSidebar() {
+		isSidebarOpen = !isSidebarOpen;
+	}
 </script>
 
 {#if isLoggedIn === true}
 
 <div class="header {isSidebarOpen ? 'open' : ''}">
-<button on:click={toggleSidebar}>
-	{isSidebarOpen ? 'Zamknij' : 'Otwórz'} menu
-</button>
+	<button on:click={toggleSidebar}>
+		{isSidebarOpen ? 'Zamknij' : 'Otwórz'} menu
+	</button>
 </div>
 
-    <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
-        <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
-        <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
-        <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
-        <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
-		<button on:click={() => goto('/main/admin/orders')}>Zamówienia</button>
-        <button on:click={logout}>Wyloguj</button>
-    </div>
-	
+<div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
+	<button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
+	<button on:click={() => goto('/main/admin/about_admin')}>O użytkowniku</button>
+	<button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
+	<button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
+	<button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
+	<button on:click={() => goto('/main/admin/orders')}>Wyszukaj Zamówienie</button>
+	<button on:click={() => goto('/main/admin/delete_admin')}>Usunięcie konta</button>
+	<button on:click={() => goto('/main/admin/password_admin')}>Zmiana hasła</button>
+	<button on:click={logout}>Wyloguj</button>
+</div>
 
-	<div class="warehouse">
-		<div>
-			<label style="margin-top: 80px" for="warehouse">Wybierz magazyn:</label>
-			<select id="warehouse" bind:value={selectedWarehouse} on:change={fetchItems}>
-				 <option value="all">Wszystkie</option>
-				 {#each warehouse as w}
-			 <option value={w._id}>{w.warehouse_type}</option>
+<div class="warehouse">
+	<div>
+		<label style="margin-top: 80px" for="warehouse">Wybierz magazyn:</label>
+		<select id="warehouse" bind:value={selectedWarehouse} on:change={fetchItems}>
+			<option value="all">Wszystkie</option>
+			{#each warehouse as w}
+				<option value={w._id}>{w.warehouse_type}</option>
 			{/each}
-				</select>
-		</div>
-		<h2>Magazyn - Dostępne przedmioty</h2>
-		<div class="items">
-			{#each items as item}
-				<div class="item">
-					<h3>{item.item_name}</h3>
-					<p>Quantity: {item.quantity}</p>
-					<p>Arrival Date: {item.arrival_date}</p>
-					<p>Added By: {item.added_by}</p>
-					<p>Warehouse ID: {item.warehouse_id}</p>
-				</div>
-			{/each}
-		</div>
+		</select>
 	</div>
+	<h2>Magazyn - Dostępne przedmioty</h2>
+	<div class="items">
+		{#each items as item}
+			<div class="item">
+				<h3>{item.item_name}</h3>
+				<p>Quantity: {item.quantity}</p>
+				<p>Arrival Date: {new Date(item.arrival_date).toLocaleDateString()}</p>
+				<p>Added By: {item.added_by_name || 'Unknown'}</p>
+				<p>Warehouse Name: {item.warehouse_type || 'Unknown'}</p>
+			</div>
+		{/each}
+	</div>
+</div>
+
 {:else if isLoggedIn === null}
 	<p>Checking authentication status...</p>
 {:else}

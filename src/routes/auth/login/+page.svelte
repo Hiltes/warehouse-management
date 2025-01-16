@@ -7,7 +7,7 @@
     let message = '';
     let isLoggedIn = false;
     let username = '';
-    let userRole= '';
+    let userRole = '';
 
     // Funkcja logowania
     async function handleLogin(event: Event) {
@@ -17,22 +17,26 @@
             const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password, role: 'admin' }),
                 credentials: 'same-origin'
             });
 
             const data = await response.json();
             if (data.success) {
                 message = 'Login successful!';
-                await checkLoginStatus();
+                isLoggedIn = true;
 
-                // Przekierowanie do user panelu po zalogowaniu
-                if(userRole==='admin'){
-                goto('/main/admin/admin_panel');
+                // Update user details based on the response
+                username = data.user?.email || '';
+                userRole = data.user?.role || '';
+
+                // Redirect based on role
+                if (userRole === 'admin') {
+                    goto('/main/admin/admin_panel');
+                } else {
+                    message = 'Invalid user role';
+                }
             } else {
-                message = 'Invalid user role';
-            }
-        } else {
                 message = 'Invalid credentials.';
             }
         } catch (error) {
@@ -44,7 +48,7 @@
     // Funkcja sprawdzająca stan zalogowania
     async function checkLoginStatus() {
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/auth/login_client', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -52,8 +56,8 @@
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
-                username = data.user?.email || ''; // Upewnij się, że user i username istnieją
-                userRole = data.user?.role || ''; // Upewnij się, że rola użytkownika istnieje
+                email = data.client?.email || ''; // Upewnij się, że user i username istnieją
+                userRole = data.client?.role || ''; // Upewnij się, że rola użytkownika istnieje
             } else {
                 isLoggedIn = false;
                 username = ''; // Wyczyszczenie nazwy użytkownika, jeśli sesja wygasła
@@ -71,6 +75,7 @@
     onMount(() => {
         checkLoginStatus();
     });
+    console.log(username,email);
 </script>
 
 {#if isLoggedIn && userRole === 'admin'}
@@ -80,10 +85,10 @@
         <p>You are already logged in. Click <a href="/main/admin/admin_panel">redirect</a>.</p>
     </div>
 {:else if isLoggedIn && userRole !== 'admin'}
-<div>
-    <p>You are logged in as {username}, but you do not have permission to access the admin panel.</p>
-    <p>{message}</p>
-</div>
+    <div>
+        <p>You are already logged in. Click <a href="/main/client/client_panel">redirect</a>.</p>
+        <p>{message}</p>
+    </div>
 {:else}
     <div>
         <form on:submit={handleLogin}>
@@ -96,10 +101,12 @@
                 <input type="password" bind:value={password} required />
             </label>
             <button class="default" type="submit">Login</button>
-            <div class="centered">
-            <a href='/auth/register'>Register</a> <br>
-            <a href='/auth/login_client'>Switch to client panel</a><br>
-            <a href='/auth/password_admin'>Change password</a>
+            <br>
+            <div class=centered>
+            <a href='/auth/register'>Register</a>
+            <br>
+            <a href='/auth/login_client'>Switch to client panel</a>
+
             </div>
         </form>
 

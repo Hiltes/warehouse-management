@@ -1,4 +1,4 @@
-import { changePassword } from '$db/api/client';
+import { changePassword } from '$db/api/user';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request }: { request: Request }) {

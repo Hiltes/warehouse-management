@@ -81,11 +81,13 @@
 </div>
 
 <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
-    <button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
+    <button on:click={() => goto('/main/client/client_panel')}>Panel Główny</button>
     <button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
-    <button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
-    <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+    <button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
     <button on:click={() => goto('/main/client/cart_client')}>Koszyk</button>
+    <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+    <button on:click={() => goto('/main/client/delete_client')}>Usunięcie konta</button>
+    <button on:click={() => goto('/main/client/password_client')}>Zmiana hasła</button>
     <button on:click={logout}>Wyloguj</button>
 </div>
 

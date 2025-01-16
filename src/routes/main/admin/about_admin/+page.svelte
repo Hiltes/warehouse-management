@@ -2,13 +2,13 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
     import type { IWarehouse } from '$db/models/warehouse';
-    import type { IClient } from '$db/models/client';
-    
+    import type { IUser } from '$db/models/user';
+
 
     let isSidebarOpen = false;
     let warehouse: IWarehouse[] = [];
     let isLoggedIn: boolean | null = null;
-    let clientData: IClient;
+    let userData: IUser;
 
    
         
@@ -29,18 +29,17 @@
 
         async function checkLoginStatus() {
         try {
-            const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
+            const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
             if (response.ok) {
                 const data = await response.json();
-                console.log('Login response data:', data)
                 isLoggedIn = data.success;
                 if (isLoggedIn) {
-                    clientData = data.client; // Assuming your JWT returns user data directly
-                    console.log(`User data fetched:`, clientData);
+                    userData = data.user; // Assuming your JWT returns user data directly
+                    console.log(`User data fetched:`, userData);
                 }
             } else {
                 isLoggedIn = false;
-                goto('/auth/login_client');
+                goto('/auth/login');
             }
         } catch (error) {
             console.error('Error checking login status:', error);
@@ -52,31 +51,36 @@
         await fetchWarehouse();
     });
 
+
     async function logout() {
 		try {
-			const response = await fetch('/main/client/client_panel', {
+			const response = await fetch('/main/admin/admin_panel', {
 				method: 'POST',
 				credentials: 'same-origin'
 			});
 			const data = await response.json();
 
 			if (data.success) {
-				goto('/auth/login_client');
+				goto('/auth/login');
 			}
 		} catch (error) {
 			console.error('Error during logout:', error);
 		}
 	}
 
+
+  
+
+    
   // Funkcja do pobrania danych klienta
-async function getClientById(userId: string) {
+async function getUserById(userId: string) {
     try {
         console.log(`Fetching client by ID: ${userId}`);
-        const response = await fetch(`/db/api/client?id=${userId}`); // Użyj nowego endpointu
+        const response = await fetch(`/db/api/user?id=${userId}`); // Użyj nowego endpointu
         if (response.ok) {
-            const client = await response.json();
-            console.log('Client data fetched:', client);
-            clientData = client;
+            const user = await response.json();
+            console.log('User data fetched:', user);
+            userData = user;
         } else {
             console.error('Error fetching client data', response.statusText);
         }
@@ -87,18 +91,18 @@ async function getClientById(userId: string) {
 
         onMount(async () => {
         try {
-            const response = await fetch('/auth/login_client', { method: 'GET', credentials: 'same-origin' });
+            const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
             if (response.ok) {
                 const data = await response.json();
                 isLoggedIn = data.success;
 
                 if (isLoggedIn && data.userId) { // Użyj userId z odpowiedzi
-                    await getClientById(data.userId); // Pobierz dane klienta
+                    await getUserById(data.userId); // Pobierz dane klienta
                     console.log(`User ID fetched: ${data.userId}`);
                 }
             } else {
                 isLoggedIn = false;
-                goto('/auth/login_client');
+                goto('/auth/login');
             }
         } catch (error) {
             console.error('Error checking login status:', error);
@@ -120,26 +124,28 @@ async function getClientById(userId: string) {
 </button>
 </div>
 
-<div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
-    <button on:click={() => goto('/main/client/client_panel')}>Panel Główny</button>
-    <button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
-    <button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
-    <button on:click={() => goto('/main/client/cart_client')}>Koszyk</button>
-    <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
-    <button on:click={() => goto('/main/client/delete_client')}>Usunięcie konta</button>
-    <button on:click={() => goto('/main/client/password_client')}>Zmiana hasła</button>
-    <button on:click={logout}>Wyloguj</button>
-</div>
-
-    {#if clientData}
-    <form on:submit={checkLoginStatus}>
-    <div>
-        <h1>Dane Klienta:</h1>
-        <p>Username: {clientData.username}</p>
-        <p>Email: {clientData?.email}</p>
-        <p>Role: {clientData?.role}</p>
+    <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
+        <button on:click={() => goto('/main/admin/admin_panel')}>Panel Główny</button>
+        <button on:click={() => goto('/main/admin/about_admin')}>O użytkowniku</button>
+        <button on:click={() => goto('/main/admin/warehouse')}>Magazyn</button>
+        <button on:click={() => goto('/main/admin/addItem')}>Dodaj Produkt</button>
+        <button on:click={() => goto('/main/admin/find_item')}>Wyszukaj Produkt</button>
+        <button on:click={() => goto('/main/admin/orders')}>Wyszukaj Zamówienie</button>
+        <button on:click={() => goto('/main/admin/delete_admin')}>Usunięcie konta</button>
+		<button on:click={() => goto('/main/admin/password_admin')}>Zmiana hasła</button>
+        <button on:click={logout}>Wyloguj</button>
     </div>
-</form>
+
+   
+    {#if userData}
+    <form on:submit={checkLoginStatus}>
+        <div>
+    <h1>Dane Klienta</h1>
+        <p>Username: {userData.username}</p>
+        <p>Email: {userData.email}</p>
+        <p>Role: {userData.role}</p>
+    </div>
+    </form>
         {:else}
         <p>Nie znaleziono danych klienta.</p>
     {/if}

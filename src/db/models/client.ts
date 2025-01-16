@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 
 // Interfejs użytkownika z TypeScript
-export interface IUser extends Document {
+export interface IClient extends Document {
     username: string;
     email: string;
     password: string;
@@ -10,11 +10,11 @@ export interface IUser extends Document {
 }
 
 // Schemat użytkownika
-const userSchema = new Schema<IUser>({
+const clientSchema = new Schema<IClient>({
     username: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, enum: ['admin']}
+    role: { type: String, enum: ['client']}
 },
 {
     versionKey: false
@@ -22,6 +22,6 @@ const userSchema = new Schema<IUser>({
 );
 
 // Model użytkownika - (Dodane: mongoose.models.User - Sprawdza, czy model User został już utworzony. Jeśli tak, korzysta z istniejącego modelu, zamiast tworzyć nowy.)
-const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
+const Client = mongoose.models.Client || mongoose.model<IClient>('Client', clientSchema);
 
-export default User;
+export default Client;

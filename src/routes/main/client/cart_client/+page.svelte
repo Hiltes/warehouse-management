@@ -47,30 +47,31 @@
 
     // Funkcja do tworzenia zamówienia
     async function placeOrder() {
-        try {
-            const response = await fetch('/main/client/cart_client', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    items: $cart
-                })
-            });
+    try {
+        const response = await fetch('/main/client/cart_client', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ items: $cart }),
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (data.success) {
-                alert('Zamówienie zostało dodane!');
-                clearCart(); // Opcjonalnie wyczyszczenie koszyka
-            } else {
-                alert('Wystąpił błąd podczas dodawania zamówienia.');
-            }
-        } catch (error) {
-            console.error('Error placing order:', error);
-            alert('Wystąpił błąd podczas dodawania zamówienia.');
+        if (data.success) {
+            alert('Zamówienie zostało dodane!');
+            clearCart();
+        } else {
+            alert(`Błąd: ${data.error}`);
         }
+    } catch (error) {
+        console.error('Error placing order:', error);
+        alert('Wystąpił błąd podczas dodawania zamówienia.');
     }
+
+
+}
+
 </script>
 
 {#if isLoggedIn === true}
@@ -81,11 +82,13 @@
 </div>
 
 <div id="mySidenav" class="sidenav {isSidebarOpen ? 'open' : ''}">
-    <button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
+    <button on:click={() => goto('/main/client/client_panel')}>Panel Główny</button>
     <button on:click={() => goto('/main/client/about_client')}>O kliencie</button>
-    <button on:click={() => goto('/main/client/opinions_client')}>Opinie</button>
-    <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+    <button on:click={() => goto('/main/client/warehouse_client')}>Magazyn</button>
     <button on:click={() => goto('/main/client/cart_client')}>Koszyk</button>
+    <button on:click={() => goto('/main/client/orders_client')}>Zamówienia</button>
+    <button on:click={() => goto('/main/client/delete_client')}>Usunięcie konta</button>
+    <button on:click={() => goto('/main/client/password_client')}>Zmiana hasła</button>
     <button on:click={logout}>Wyloguj</button>
 </div>
 
@@ -206,6 +209,7 @@
         margin-right: auto;
         transition: transform 0.3s ease;
         
+        
     }
     
     .cart-summary h3 {
@@ -223,6 +227,7 @@
         font-size: 1rem;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        margin-top: 1rem;
     }
     
     .cart-summary button:hover {
