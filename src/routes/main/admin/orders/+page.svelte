@@ -2,77 +2,25 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
 
-    // Typ dla zamówienia
     type Order = {
-        id: string;
-        name: string;
-        quantity: number;
+        _id: string;
+        items: any[];
+        total: number;
+        createdAt: string;
     };
 
-    let isLoggedIn: boolean | null = null; // Status zalogowania
-    let orders: Order[] = []; // Lista zamówień
-    let filteredOrders: Order[] = []; // Lista przefiltrowanych zamówień
-    let searchQuery = ''; // Wpisany tekst w polu wyszukiwania
-    let error = ''; // Informacja o błędach (jeśli wystąpią)
-    let isSidebarOpen = false; // Status menu bocznego
+    let isLoggedIn: boolean | null = null;
+    let orders: Order[] = [];
+    let filteredOrders: Order[] = [];
+    let searchQuery = '';
+    let loading: boolean = true;
+    let error: string | null = null;
+    let isSidebarOpen = false;
 
-    // Funkcja pobierająca zamówienia z bazy danych
-    async function fetchOrders() {
-        try {
-            const response = await fetch('/main/admin/orders', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success && Array.isArray(data.orders)) {
-                orders = data.orders.map((order: Partial<Order>) => ({
-                    id: order.id || 'Brak ID',
-                    name: order.name || 'Brak nazwy',
-                    quantity: order.quantity || 0,
-                }));
-                filteredOrders = [...orders];
-                error = '';
-            } else {
-                throw new Error(data.message || 'Nie udało się pobrać zamówień.');
-            }
-        } catch (err) {
-            if (err instanceof Error) {
-                console.error('Błąd podczas pobierania zamówień:', err.message);
-                error = err.message;
-            } else {
-                console.error('Nieznany błąd:', err);
-                error = 'Nieznany błąd podczas pobierania zamówień.';
-            }
-        }
-    }
-
-    // Obsługa wyszukiwania
-    function handleSearch() {
-        if (searchQuery.trim() === '') {
-            filteredOrders = [...orders]; // Pokaż wszystkie zamówienia, jeśli pole jest puste
-        } else {
-            const query = searchQuery.toLowerCase();
-
-            // Filtrowanie zamówień na podstawie ID zamówienia
-            filteredOrders = orders.filter(order =>
-                order.id.toLowerCase().includes(query)
-            );
-        }
-    }
-
-    // Obsługa menu bocznego
     function toggleSidebar() {
         isSidebarOpen = !isSidebarOpen;
     }
 
-    // Wylogowanie
     async function logout() {
         try {
             const response = await fetch('/main/admin/admin_panel', {
@@ -89,22 +37,70 @@
         }
     }
 
-    // Sprawdzenie, czy użytkownik jest zalogowany i pobranie zamówień
-    onMount(async () => {
+    async function fetchOrders() {
         try {
-            const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+            const response = await fetch('/api/orders', { credentials: 'same-origin' });
             const data = await response.json();
 
             if (data.success) {
-                isLoggedIn = true;
-                await fetchOrders(); // Pobierz zamówienia, jeśli użytkownik jest zalogowany
+                orders = data.orders;
+                filteredOrders = [...orders];
+            } else {
+                throw new Error(data.message || 'Nie udało się pobrać zamówień.');
+            }
+        } catch (err) {
+            if (err instanceof Error) {
+                error = err.message;
+            } else {
+                error = 'Wystąpił nieoczekiwany błąd.';
+            }
+        } finally {
+            loading = false;
+        }
+    }
+
+    function handleSearch() {
+        if (searchQuery.trim() === '') {
+            filteredOrders = [...orders];
+        } else {
+            const query = searchQuery.toLowerCase();
+            filteredOrders = orders.filter(order =>
+                order._id.toLowerCase().includes(query)
+            );
+        }
+    }
+
+    function formatDate(date: string) {
+        const parsedDate = new Date(date);
+        if (isNaN(parsedDate.getTime())) {
+            return 'Nieprawidłowa data';
+        }
+        return parsedDate.toLocaleString('pl-PL', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    onMount(async () => {
+        try {
+            const response = await fetch('/auth/login', { method: 'GET', credentials: 'same-origin' });
+
+            if (response.ok) {
+                const data = await response.json();
+                isLoggedIn = data.success;
             } else {
                 isLoggedIn = false;
             }
         } catch (error) {
-            console.error('Error during authentication check:', error);
+            console.error('Error checking login status:', error);
             isLoggedIn = false;
         }
+
+        fetchOrders();
     });
 </script>
 
@@ -128,7 +124,6 @@
 </div>
 
 <div class="main">
-    <!-- Pole wyszukiwania -->
     <div class="search-bar">
         <label for="search">Wyszukaj zamówienie (ID):</label>
         <input
@@ -140,94 +135,83 @@
         />
     </div>
 
-    {#if filteredOrders.length > 0}
-        <div class="orders">
-            {#each filteredOrders as order}
-                <div class="order">
-                    <h3>{order.name}</h3>
-                    <p><strong>ID:</strong> {order.id}</p>
-                    <p><strong>Ilość:</strong> {order.quantity}</p>
-                </div>
-            {/each}
-        </div>
-    {:else}
-        <p>Brak zamówień pasujących do wyszukiwania.</p>
-    {/if}
-
-    {#if error}
+    {#if loading}
+        <p>Ładowanie zamówień...</p>
+    {:else if error}
         <p class="error">{error}</p>
+    {:else if filteredOrders.length === 0}
+        <p>Nie znaleziono żadnych zamówień.</p>
+    {:else}
+        <div class="orders">
+            
+            <ul>
+                {#each filteredOrders as order}
+                    <li class="order">
+                        <h3>Zamówienie ID: {order._id}</h3>
+                        <p><strong>Data utworzenia:</strong> {formatDate(order.createdAt)}</p>
+                        <p><strong>Łączna ilość produktów:</strong> {order.total}</p>
+                        <ul class="items">
+                            {#each order.items as item}
+                                <li>{item.name} - Ilość: {item.quantity}</li>
+                            {/each}
+                        </ul>
+                    </li>
+                {/each}
+            </ul>
+        </div>
     {/if}
 </div>
 {:else if isLoggedIn === null}
-<p>Sprawdzanie autoryzacji...</p>
+<p>Sprawdzanie statusu uwierzytelniania...</p>
 {:else}
 <p>Brak dostępu. Zaloguj się, aby kontynuować.</p>
 {/if}
 
 <style>
-    .search-bar {
-        background-color: #fff;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        margin: 0 auto;
-        margin-bottom: 2rem;
-        text-align: center;
-        align-items: center;
-    }
-
-    .search-bar input {
-        width: calc(100% - 20px); /* Pełna szerokość z marginesem */
-        padding: 0.6rem;
-        margin-bottom: 1rem;
-        border-radius: 4px;
-        font-size: 1.2rem;
-        box-sizing: border-box;
-    }
-
     .orders {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
-        justify-content: center;
+        padding: 20px;
+        background-color: #f0f0f0;
     }
 
     .order {
         background-color: white;
-        border: 1px solid #ccc;
+        padding: 20px;
         border-radius: 10px;
-        padding: 15px;
-        width: 250px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        text-align: center;
+        transition: transform 0.2s;
     }
 
     .order:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
     .order h3 {
-        font-size: 18px;
+        text-align: center;
+        font-size: 20px;
         color: #007bff;
         margin-bottom: 10px;
     }
 
     .order p {
-        font-size: 14px;
-        color: #333;
         margin: 5px 0;
     }
 
-    .order p strong {
-        color: #555;
+    .items {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .items li {
+        margin-bottom: 5px;
     }
 
     .error {
         color: red;
-        font-weight: bold;
         text-align: center;
+        margin-top: 20px;
     }
 </style>
+
